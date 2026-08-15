@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+const { title = 'Druckers Mart' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+    <meta name="description" content="Druckers Mart product catalogue and availability enquiry." />
+    <link rel="canonical" href={`https://druckersmart.com${Astro.url.pathname}`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Druckers Mart" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content="Druckers Mart product catalogue and availability enquiry." />
+    <meta property="og:url" content={`https://druckersmart.com${Astro.url.pathname}`} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Druckers Mart",
+      "url": "https://druckersmart.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://druckersmart.com/products?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Druckers Mart Private Limited",
+      "url": "https://druckersmart.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Baddi",
+        "addressRegion": "Solan",
+        "addressCountry": "IN"
+      }
+    })} />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="wordmark" href="/">DRUCKERS MART</a>
+        <div class="site-header__actions">
+          <a class="button button--small header-quote" href="/enquiry">Request quote</a>
+          <a class="header-phone" href="tel:+919968275213" aria-label="Call +91 99682 75213">📞 +91 99682 75213</a>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+            <span class="menu-toggle__icon" aria-hidden="true">☰</span><span class="menu-toggle__label">Menu</span>
+          </button>
+        </div>
+        <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
+          <a href="/products">Products</a>
+          <a href="/about">About</a>
+          <a href="/resources">Resources</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer"><div class="container"><p>Druckers Mart Private Limited</p><p>Baddi, Solan, Himachal Pradesh, India</p><p><a href="tel:+919968275213">+91 99682 75213</a> · <a href="mailto:druckersmart@gmail.com">druckersmart@gmail.com</a></p><nav class="site-nav" aria-label="Footer navigation"><a href="/resources">Resources</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/returns">Returns</a><a href="/contact">Contact</a></nav></div></footer>
+    <script>
+      const header = document.querySelector('.site-header');
+      const menuButton = document.querySelector('.menu-toggle') as HTMLButtonElement | null;
+      const navigation = document.querySelector('#primary-navigation');
+      if (header && menuButton && navigation) {
+        header.setAttribute('data-menu-ready', 'true');
+        menuButton.addEventListener('click', () => {
+          const open = menuButton.getAttribute('aria-expanded') === 'true';
+          menuButton.setAttribute('aria-expanded', String(!open));
+          header.setAttribute('data-menu-open', String(!open));
+        });
+      }
+    </script>
+  </body>
+</html>
+---

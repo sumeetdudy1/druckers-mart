@@ -1,0 +1,68 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import AvailabilityBadge from '../../components/AvailabilityBadge.astro';
+import AvailabilityPanel from '../../components/AvailabilityPanel.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { publicProducts } from '../../data/products';
+import { druckersBusiness } from '../../data/druckers-business';
+
+export function getStaticPaths() {
+  return publicProducts().map((product) => ({ params: { id: product.id }, props: { product } }));
+}
+
+const { product } = Astro.props;
+const allProducts = publicProducts();
+const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => field.verified);
+const relatedProducts = allProducts.filter((candidate) => candidate.category === product.category && candidate.id !== product.id).slice(0, 3);
+const categoryLabel = product.category === 'pre-press' ? 'Pre-press' : product.category === 'post-press' ? 'Post-press' : 'Press';
+const whatsappMsg = encodeURIComponent(`Enquiry about ${product.name} from Druckers Mart website.`);
+---
+<SiteLayout title={`${product.name} | Druckers Mart`}>
+  <div class="container">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": product.name,
+      "description": "Availability, lead time and delivery are confirmed after enquiry.",
+      "sku": product.id,
+      "category": categoryLabel,
+      "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "url": `https://druckersmart.com/products/${product.id}`,
+        "seller": {
+          "@type": "Organization",
+          "name": "Druckers Mart Private Limited"
+        }
+      }
+    })} />
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/products">Products</a><span aria-hidden="true">/</span><a href={`/products?category=${product.category}`}>{categoryLabel}</a><span aria-hidden="true">/</span><span>{product.name}</span></nav>
+    <div class="product-detail-layout">
+      <section class="product-detail-main">
+        <p class="eyebrow">{categoryLabel}</p>
+        <h1>{product.name}</h1>
+        <AvailabilityBadge status={product.availability_status} />
+        <p class="lede">Availability, lead time and delivery are confirmed after enquiry.</p>
+        {verifiedSpecs.length > 0 && <table class="specs"><caption>Source-listed information</caption><tbody>{verifiedSpecs.map(([key, field]) => <tr><th scope="row">{key.replaceAll('_', ' ')}</th><td>{field.value}</td></tr>)}</tbody></table>}
+      </section>
+      <aside class="product-detail-aside" aria-label="Product enquiry">
+        <AvailabilityPanel />
+        <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+      </aside>
+    </div>
+    {relatedProducts.length > 0 && <section class="related" aria-labelledby="related-title"><h2 id="related-title">More {categoryLabel.toLowerCase()} products</h2><div class="grid">{relatedProducts.map((related) => <ProductCard product={related} />)}</div></section>}
+  </div>
+</SiteLayout>
+<style>
+  .breadcrumbs { display: flex; gap: .55rem; flex-wrap: wrap; font-size: .9rem; margin-bottom: 1rem; }
+  .product-detail-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .product-detail-main h1 { max-width: 18ch; }
+  .product-detail-aside { position: sticky; top: 1rem; }
+  .product-detail-aside .notice { margin-top: 0; }
+  .specs { width: 100%; max-width: 42rem; border-collapse: collapse; margin-block: 1.5rem; background: #fffdf8; }
+  .specs caption { text-align: left; font-weight: 800; padding: .75rem 0; }
+  .specs th, .specs td { border: 1px solid var(--line); padding: .7rem; text-align: left; }
+  .related { margin-top: 3rem; }
+  @media (max-width: 760px) { .product-detail-layout { grid-template-columns: 1fr; gap: 1rem; } .product-detail-aside { position: static; } }
+</style>
+---

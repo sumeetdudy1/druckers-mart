@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.astro/
+.enquiry-data/
+*.local
+.env
+.DS_Store
+
+# Development-only enquiry sink
+src/data/enquiries.jsonl
+src/data/enquiries.sqlite
+
+# Keep empty scaffold directories tracked
+!.gitkeep
+!.gitkeep
+
+# No generated product or contact data should be committed accidentally
+src/data/generated/
+public/generated/

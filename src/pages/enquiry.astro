@@ -1,0 +1,103 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import AvailabilityPanel from '../components/AvailabilityPanel.astro';
+import { publicProducts } from '../data/products';
+
+const products = publicProducts();
+const selectedId = Astro.url.searchParams.get('product') ?? '';
+const selected = products.find((product) => product.id === selectedId);
+---
+<SiteLayout title="Request a quote | Druckers Mart">
+  <div class="container">
+    <section class="hero">
+      <p class="eyebrow">Enquiry</p>
+      <h1>Tell us what you need.</h1>
+      <p class="lede">Share the product, quantity and delivery location. Availability is confirmed after your enquiry or order.</p>
+      <p class="demo-notice">This is a demonstration form. Submissions are validated in your browser only and are not sent to Druckers Mart or any external system.</p>
+    </section>
+    <form class="enquiry-form" id="enquiry-form" method="post" action="/enquiry/submit">
+      <ol class="form-steps" aria-label="Enquiry stages"><li class="form-step form-step--active"><span>01</span> Requirement</li><li class="form-step"><span>02</span> Buyer details</li><li class="form-step"><span>03</span> Submit enquiry</li></ol>
+      <fieldset>
+        <legend>01 Requirement</legend>
+        <label for="product_id">Product</label>
+        <select id="product_id" name="product_id">
+          <option value="">I am enquiring about a general requirement</option>
+          {products.map((product) => <option value={product.id} selected={product.id === selected?.id}>{product.name}</option>)}
+        </select>
+        <label for="quantity_requirement">Quantity or requirement <span aria-hidden="true">*</span></label>
+        <input id="quantity_requirement" name="quantity_requirement" required />
+        <label for="delivery_location">Delivery location <span aria-hidden="true">*</span></label>
+        <input id="delivery_location" name="delivery_location" required />
+        <label for="required_by_date">Required by date</label>
+        <input id="required_by_date" name="required_by_date" type="date" />
+        <label for="additional_notes">Additional notes</label>
+        <textarea id="additional_notes" name="additional_notes" rows="4"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>02 Buyer details</legend>
+        <label for="buyer_name">Your name <span aria-hidden="true">*</span></label>
+        <input id="buyer_name" name="buyer_name" required autocomplete="name" />
+        <label for="company">Company</label>
+        <input id="company" name="company" autocomplete="organization" />
+        <label for="work_email">Work email <span aria-hidden="true">*</span></label>
+        <input id="work_email" name="work_email" type="email" required autocomplete="email" />
+        <label for="phone">Phone <span aria-hidden="true">*</span></label>
+        <input id="phone" name="phone" type="tel" required autocomplete="tel" />
+        <label class="check"><input type="checkbox" name="consent_contact" value="true" required /> I agree that Druckers Mart may use these details to respond to this enquiry.</label>
+        <p class="form-help">See the <a href="/privacy">Privacy Policy</a>. No submission is sent from this static demo.</p>
+        <input type="hidden" name="privacy_policy_version" value="demo-v1" />
+        <input type="hidden" name="form_started_at" id="form_started_at" />
+        <label class="honeypot" aria-hidden="true">Leave this field empty<input name="honeypot" id="honeypot" tabindex="-1" autocomplete="off" /></label>
+      </fieldset>
+      <button class="button" type="submit" id="submit-button">Submit enquiry</button>
+      <p class="form-status" id="form-status" role="status" hidden></p>
+    </form>
+    <section class="notice" id="success-panel" hidden aria-labelledby="success-title">
+      <h2 id="success-title">Enquiry submitted</h2>
+      <p>This demo has validated your enquiry locally. No email or external submission was sent.</p>
+      <a class="button button--secondary" href="/products">Continue browsing products</a>
+    </section>
+    <AvailabilityPanel />
+  </div>
+</SiteLayout>
+<script>
+  const form = document.querySelector('#enquiry-form') as HTMLFormElement | null;
+  const success = document.querySelector('#success-panel');
+  const started = document.querySelector('#form_started_at') as HTMLInputElement | null;
+  const submitButton = document.querySelector('#submit-button') as HTMLButtonElement | null;
+  const honeypot = document.querySelector('#honeypot') as HTMLInputElement | null;
+
+  if (started) started.value = new Date().toISOString();
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    
+    // Check honeypot
+    if (honeypot && honeypot.value !== '') {
+        console.error('Honeypot triggered');
+        return; // Silent fail for bots
+    }
+    
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    
+    // Prevent double submission
+    if (submitButton) submitButton.disabled = true;
+    
+    form.hidden = true;
+    success?.removeAttribute('hidden');
+  });
+</script>
+<style>
+    .demo-notice { font-size: .9rem; color: var(--mineral-blue); background: #eef3f7; border: 1px solid var(--line); padding: .75rem 1rem; border-radius: 4px; margin-top: 1rem; }
+  .hero { padding-bottom: 1.5rem; }
+  .enquiry-form { display: grid; gap: 1.25rem; max-width: 48rem; }
+  .form-steps { margin-bottom: 1rem; }
+  fieldset { display: grid; gap: .6rem; border: 1px solid var(--line); padding: 1.25rem; background: #fffdf8; }
+  legend { padding-inline: .4rem; font-weight: 800; }
+  input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--graphite); padding: .7rem; font: inherit; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 2px; }
+  .check { display: flex; gap: .6rem; align-items: flex-start; margin-top: .5rem; }
+  .check input { width: auto; margin-top: .25rem; }
+  .form-help { font-size: .9rem; }
+  .honeypot { position: absolute; left: -9999px; }
+</style>

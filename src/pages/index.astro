@@ -1,0 +1,49 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import AvailabilitySummary from '../components/AvailabilitySummary.astro';
+import { publicProducts } from '../data/products';
+const products = publicProducts();
+const featuredProducts = products.slice(0, 3);
+---
+<SiteLayout title="Druckers Mart | Print production supplies">
+  <div class="container">
+    <section class="hero">
+      <p class="eyebrow">Druckers Mart</p>
+      <h1>Print production supplies, organised for the workflow.</h1>
+      <p class="lede">A product catalogue for printing and packaging consumables. Availability is confirmed after enquiry.</p>
+      <div class="actions">
+        <a class="button" href="/products">Explore Products</a>
+        <a class="button button--secondary" href="/contact">Request Quote / Check Availability</a>
+      </div>
+    </section>
+    <section aria-labelledby="stages">
+      <h2 id="stages">Find supply by production stage</h2>
+      <div class="production-signal" aria-label="Production stages: Pre-press, Press, and Post-press">
+        {[
+          ['pre-press', 'Pre-press', 'Plates and CTP inputs'],
+          ['press', 'Press', 'Inks, wash and press supplies'],
+          ['post-press', 'Post-press', 'Finishing and packaging supplies'],
+        ].map(([stage, label, description], index) => <>
+          <a class="stage-card" href={`/products?category=${stage}`} aria-label={`Explore ${label} products`}><span class="stage-number">0{index + 1}</span><h3>{label}</h3><p>{description}</p><span class="stage-link">Explore catalogue →</span></a>
+          {index < 2 && <span class="stage-arrow" aria-hidden="true">→</span>}
+        </>)}
+      </div>
+    </section>
+    <AvailabilitySummary />
+    <section aria-labelledby="built-for">
+      <h2 id="built-for">Built for</h2>
+      <p>Commercial printers, packaging converters, and procurement teams.</p>
+    </section>
+    <section aria-labelledby="featured">
+      <h2 id="featured">Initial catalogue</h2>
+      <p>Products are sourced from the approved initial catalogue and presented with Druckers availability status.</p>
+      {products.length > 0 ? <div class="grid">{featuredProducts.map((product) => <ProductCard product={product} />)}</div> : <div class="notice"><p>Products are being confirmed for the initial Druckers catalogue.</p><a class="button button--secondary" href="/enquiry">Request availability</a></div>}
+    </section>
+    <section aria-labelledby="specific-quantity">
+      <h2 id="specific-quantity">Need a specific quantity?</h2>
+      <p>Tell us the product, quantity, and delivery location.</p>
+      <a class="button" href="/enquiry">Request Quote / Check Availability</a>
+    </section>
+  </div>
+</SiteLayout>

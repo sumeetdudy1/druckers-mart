@@ -1,0 +1,49 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import AvailabilitySummary from '../components/AvailabilitySummary.astro';
+import { druckersBusiness } from '../data/druckers-business';
+---
+<SiteLayout title="Contact | Druckers Mart">
+  <div class="container">
+    <section class="hero">
+      <p class="eyebrow">Enquiry</p>
+      <h1>Request a quote or check availability.</h1>
+      <p class="lede">Tell us the product, quantity and delivery location so availability can be confirmed after your enquiry or order.</p>
+      <a class="button" href="/enquiry">Start an enquiry</a>
+    </section>
+
+    <section class="contact-section" aria-labelledby="contact-title">
+      <h2 id="contact-title">Other ways to reach us</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h3>Phone / WhatsApp</h3>
+          <p>Same number for calls and WhatsApp messages.</p>
+          <div class="contact-actions">
+            <a class="button" href={`tel:${druckersBusiness.phone}`}>Call +91 99682 75213</a>
+            <a class="button button--secondary" href={`https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}`} target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <h3>Email</h3>
+          <p>Expect a response within one business day.</p>
+          <a class="button button--secondary" href={`mailto:${druckersBusiness.email}`}>{druckersBusiness.email}</a>
+        </div>
+        <div class="contact-card">
+          <h3>Office</h3>
+          <p>{druckersBusiness.legalName}<br>{druckersBusiness.location}</p>
+        </div>
+      </div>
+    </section>
+
+    <AvailabilitySummary />
+  </div>
+</SiteLayout>
+<style>
+  .contact-section { max-width: 52rem; }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem; }
+  .contact-card { border: 1px solid var(--line); background: #fffdf8; padding: 1.5rem; }
+  .contact-card h3 { margin-top: 0; margin-bottom: .5rem; }
+  .contact-card p { margin: 0 0 1rem; color: var(--mineral-blue); line-height: 1.5; }
+  .contact-actions { display: flex; flex-direction: column; gap: .5rem; }
+  @media (max-width: 760px) { .contact-grid { grid-template-columns: 1fr; } }
+</style>

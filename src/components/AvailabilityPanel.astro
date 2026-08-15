@@ -1,0 +1,13 @@
+---
+import { supplyRules } from '../data/druckers-business';
+---
+<section class="notice" aria-labelledby="availability-title">
+  <h2 id="availability-title">Availability &amp; lead time</h2>
+  <p>Listed products can be sourced on demand from Baddi, subject to confirmation after enquiry or order.</p>
+  <ul>
+    {supplyRules.availabilityStatuses.map((status) => <li>{status}</li>)}
+  </ul>
+  <p>{supplyRules.sameDayNote}</p>
+  <p>{supplyRules.largerRequirementNote}.</p>
+  <p>Exact availability, lead time and delivery are confirmed after your enquiry. Coverage and logistics charges are communicated on request.</p>
+</section>

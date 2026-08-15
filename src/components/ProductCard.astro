@@ -1,0 +1,37 @@
+---
+import type { ProductRecord } from '../data/product-schema';
+import AvailabilityBadge from './AvailabilityBadge.astro';
+import { productCategoryLabel } from '../data/products';
+const { product } = Astro.props as { product: ProductRecord };
+const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => field.verified);
+const categoryLabel = productCategoryLabel(product.category);
+const whatsappMsg = encodeURIComponent(`Enquiry about ${product.name} from Druckers Mart website.`);
+---
+<article class="card" data-product-card data-category={product.category} data-availability={product.availability_status} data-search={`${product.name} ${product.category} ${verifiedSpecs.map(([key, field]) => `${key} ${field.value}`).join(' ')}`.toLowerCase()}>
+  <p class="eyebrow">{categoryLabel}</p>
+  <h3><a href={`/products/${product.id}`}>{product.name}</a></h3>
+  <AvailabilityBadge status={product.availability_status} />
+  {verifiedSpecs.length > 0 && (
+    <dl>
+      {verifiedSpecs.map(([key, field]) => <div><dt>{key.replaceAll('_', ' ')}</dt><dd>{field.value}</dd></div>)}
+    </dl>
+  )}
+  <div class="card-actions">
+    <a class="button button--secondary" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+    <a class="button button--secondary whatsapp-btn" href={`https://wa.me/919968275213?text=${whatsappMsg}`} target="_blank" rel="noopener" aria-label={`WhatsApp about ${product.name}`}>WhatsApp</a>
+  </div>
+</article>
+
+<style>
+  dl { margin: 1rem 0; }
+  dl div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); padding: .4rem 0; }
+  dt { color: #59636a; text-transform: capitalize; }
+  dd { margin: 0; font-weight: 600; }
+  .button { margin-top: .75rem; font-size: .9rem; }
+  .card-actions { display: flex; flex-direction: column; gap: .5rem; margin-top: .75rem; }
+  @media (max-width: 760px) {
+    dl { margin: 0.5rem 0; }
+    dl div { padding: 0.25rem 0; }
+    .button { margin-top: 0.5rem; }
+  }
+</style>

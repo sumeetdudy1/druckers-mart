@@ -1,0 +1,13 @@
+---
+import type { AvailabilityStatus } from '../data/product-schema';
+import { availabilityLabel } from '../lib/availability';
+const { status } = Astro.props as { status: AvailabilityStatus };
+---
+<span class:list={['badge', status === 'in_stock' ? 'badge--green' : 'badge--amber']}>
+  {availabilityLabel(status)}
+</span>
+---
+
+<style>
+  span { white-space: nowrap; }
+</style>
