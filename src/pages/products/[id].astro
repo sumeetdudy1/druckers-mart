@@ -4,7 +4,6 @@ import AvailabilityBadge from '../../components/AvailabilityBadge.astro';
 import AvailabilityPanel from '../../components/AvailabilityPanel.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { publicProducts } from '../../data/products';
-import { druckersBusiness } from '../../data/druckers-business';
 
 export function getStaticPaths() {
   return publicProducts().map((product) => ({ params: { id: product.id }, props: { product } }));
@@ -15,7 +14,6 @@ const allProducts = publicProducts();
 const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => field.verified);
 const relatedProducts = allProducts.filter((candidate) => candidate.category === product.category && candidate.id !== product.id).slice(0, 3);
 const categoryLabel = product.category === 'pre-press' ? 'Pre-press' : product.category === 'post-press' ? 'Post-press' : 'Press';
-const whatsappMsg = encodeURIComponent(`Enquiry about ${product.name} from Druckers Mart website.`);
 ---
 <SiteLayout title={`${product.name} | Druckers Mart`}>
   <div class="container">
