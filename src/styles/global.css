@@ -75,3 +75,10 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
   .card { padding: 0.85rem; }
   main { padding-block: 1.5rem; }
 }
+
+/* Small screen header adjustment */
+@media (max-width: 480px) {
+  .site-header__inner { gap: 0.5rem; }
+  .site-header__actions { flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+  .header-phone { font-size: 0.78rem; }
+}
