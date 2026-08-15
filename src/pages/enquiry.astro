@@ -13,9 +13,9 @@ const selected = products.find((product) => product.id === selectedId);
       <p class="eyebrow">Enquiry</p>
       <h1>Tell us what you need.</h1>
       <p class="lede">Share the product, quantity and delivery location. Availability is confirmed after your enquiry or order.</p>
-      <p class="demo-notice">This is a demonstration form. Submissions are validated in your browser only and are not sent to Druckers Mart or any external system.</p>
+      <p class="demo-notice">Enquiries are sent to our team at druckersmart@gmail.com. We aim to respond within one business day.</p>
     </section>
-    <form class="enquiry-form" id="enquiry-form" method="post" action="/enquiry/submit">
+    <form class="enquiry-form" id="enquiry-form" method="post" action="https://formspree.io/f/mqazkdwz">
       <ol class="form-steps" aria-label="Enquiry stages"><li class="form-step form-step--active"><span>01</span> Requirement</li><li class="form-step"><span>02</span> Buyer details</li><li class="form-step"><span>03</span> Submit enquiry</li></ol>
       <fieldset>
         <legend>01 Requirement</legend>
@@ -44,7 +44,7 @@ const selected = products.find((product) => product.id === selectedId);
         <label for="phone">Phone <span aria-hidden="true">*</span></label>
         <input id="phone" name="phone" type="tel" required autocomplete="tel" />
         <label class="check"><input type="checkbox" name="consent_contact" value="true" required /> I agree that Druckers Mart may use these details to respond to this enquiry.</label>
-        <p class="form-help">See the <a href="/privacy">Privacy Policy</a>. No submission is sent from this static demo.</p>
+      <p class="form-help">See the <a href="/privacy">Privacy Policy</a>.</p>
         <input type="hidden" name="privacy_policy_version" value="demo-v1" />
         <input type="hidden" name="form_started_at" id="form_started_at" />
         <label class="honeypot" aria-hidden="true">Leave this field empty<input name="honeypot" id="honeypot" tabindex="-1" autocomplete="off" /></label>
@@ -54,7 +54,7 @@ const selected = products.find((product) => product.id === selectedId);
     </form>
     <section class="notice" id="success-panel" hidden aria-labelledby="success-title">
       <h2 id="success-title">Enquiry submitted</h2>
-      <p>This demo has validated your enquiry locally. No email or external submission was sent.</p>
+      <p>Thank you. Your enquiry has been sent to the Druckers Mart team. We aim to respond within one business day.</p>
       <a class="button button--secondary" href="/products">Continue browsing products</a>
     </section>
     <AvailabilityPanel />
@@ -69,22 +69,38 @@ const selected = products.find((product) => product.id === selectedId);
 
   if (started) started.value = new Date().toISOString();
 
-  form?.addEventListener('submit', (event) => {
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
-    
+
     // Check honeypot
     if (honeypot && honeypot.value !== '') {
         console.error('Honeypot triggered');
         return; // Silent fail for bots
     }
-    
-    if (!form.checkValidity()) { form.reportValidity(); return; }
-    
+
+    if (!form?.checkValidity()) { form?.reportValidity(); return; }
+
     // Prevent double submission
     if (submitButton) submitButton.disabled = true;
-    
-    form.hidden = true;
-    success?.removeAttribute('hidden');
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        form.hidden = true;
+        success?.removeAttribute('hidden');
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch {
+      if (submitButton) submitButton.disabled = false;
+      alert('There was a problem sending your enquiry. Please try again or contact us directly via WhatsApp or email.');
+    }
   });
 </script>
 <style>
