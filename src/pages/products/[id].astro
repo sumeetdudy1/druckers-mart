@@ -218,4 +218,7 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
     .specs-list { flex-direction: column; gap: 0.5rem; }
     .spec-item { flex-direction: row; justify-content: space-between; min-width: 0; }
   }
+  @media (max-width: 350px) {
+    .product-detail-main, .product-detail-aside { overflow-x: hidden; }
+  }
 </style>
