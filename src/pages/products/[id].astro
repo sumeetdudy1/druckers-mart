@@ -17,9 +17,27 @@ const categoryLabel = productCategoryLabel(product.category);
 const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquire about ${product.name}.`);
 const whatsappUrl = `https://wa.me/919968275213?text=${whatsappMsg}`;
 const availabilityDisplay = availabilityLabel(product.availability_status);
+const schemaAvailability = product.availability_status === 'in_stock' ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability';
 ---
 <SiteLayout title={`${product.name} | Druckers Mart`}>
   <div class="container">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": product.name,
+      "description": "Availability, lead time and delivery are confirmed after enquiry.",
+      "sku": product.id,
+      "category": categoryLabel,
+      "offers": {
+        "@type": "Offer",
+        "availability": schemaAvailability,
+        "url": `https://druckersmart.com/products/${product.id}`,
+        "seller": {
+          "@type": "Organization",
+          "name": "Druckers Mart Private Limited"
+        }
+      }
+    })} />
     <!-- Breadcrumbs -->
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <a href="/">Home</a>

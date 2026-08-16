@@ -46,7 +46,7 @@ const categoryLabels = { '': 'All stages', 'pre-press': 'Pre-press', press: 'Pre
       <button class="button" type="submit">Apply filters</button>
       <a class="button button--secondary" href="/products">Clear</a>
     </form>
-    <p class="result-count" id="result-count" role="status">{products.length} product{products.length === 1 ? '' : 's'} · {categoryLabels[category as keyof typeof categoryLabels] ?? 'Selected stage'}</p>
+    <p class="result-count" id="result-count" role="status" aria-live="polite">{products.length} product{products.length === 1 ? '' : 's'} · {categoryLabels[category as keyof typeof categoryLabels] ?? 'Selected stage'}</p>
     <AvailabilityPanel />
     <div class="grid" id="product-grid">{products.map((product) => <ProductCard product={product} />)}</div>
     <div class="notice" id="no-results" hidden={products.length > 0}><h2>No matching products</h2><p>Try clearing a filter or tell us what you need.</p><a class="button" href="/enquiry">Request availability</a></div>

@@ -7,7 +7,7 @@ const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => 
 const categoryLabel = productCategoryLabel(product.category);
 const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquire about ${product.name}.`);
 ---
-<article class="card" data-product-card data-category={product.category} data-availability={product.availability_status} data-search={`${product.name} ${product.category} ${verifiedSpecs.map(([key, field]) => `${key} ${field.value}`).join(' ')}`.toLowerCase()}>
+<article class:list={["card", `card--${product.category}`]} data-product-card data-category={product.category} data-availability={product.availability_status} data-search={`${product.name} ${product.category} ${verifiedSpecs.map(([key, field]) => `${key} ${field.value}`).join(' ')}`.toLowerCase()}>
   <div class="card__header">
     <p class="eyebrow card__category">{categoryLabel}</p>
     <h3><a href={`/products/${product.id}`}>{product.name}</a></h3>

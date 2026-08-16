@@ -10,6 +10,11 @@
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   color: var(--graphite);
   background: var(--off-white);
+
+  /* Stage-specific colors */
+  --stage-pre-press: var(--signal-orange);
+  --stage-press: var(--mineral-blue);
+  --stage-post-press: var(--graphite);
 }
 
 * { box-sizing: border-box; }
@@ -185,3 +190,31 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
   .wordmark__text { display: none; }
   .wordmark__mark { width: 2rem; height: 2rem; font-size: .75rem; }
 }
+
+/* ===== PHASE 4 ENHANCEMENTS ===== */
+
+/* Card stage indicators */
+.card--pre-press { border-top: 3px solid var(--stage-pre-press); }
+.card--press { border-top: 3px solid var(--stage-press); }
+.card--post-press { border-top: 3px solid var(--stage-post-press); }
+
+/* Responsive Grid fixes */
+@media (min-width: 601px) and (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* Filter form enhancements */
+.filters input:focus-visible, .filters select:focus-visible {
+  outline: 3px solid var(--signal-orange);
+  outline-offset: 2px;
+}
+
+/* Breadcrumb refinement */
+.breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--mineral-blue); }
+.breadcrumbs a { text-decoration: none; color: var(--mineral-blue); }
+.breadcrumbs a:hover { color: var(--signal-orange); }
+.breadcrumbs [aria-current="page"] { font-weight: 600; color: var(--graphite); }
