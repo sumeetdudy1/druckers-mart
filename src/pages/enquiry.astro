@@ -12,11 +12,23 @@ const selected = products.find((product) => product.id === selectedId);
     <section class="hero">
       <p class="eyebrow">Enquiry</p>
       <h1>Tell us what you need.</h1>
-      <p class="lede">Share the product, quantity and delivery location. Availability is confirmed after your enquiry or order.</p>
+      {selected ? (
+        <div class="product-banner">
+          <p>You're enquiring about:</p>
+          <h3>{selected.name}</h3>
+        </div>
+      ) : (
+        <p class="lede">Share the product, quantity and delivery location. Availability is confirmed after your enquiry or order.</p>
+      )}
       <p class="demo-notice">Enquiries are sent to our team at druckersmart@gmail.com. We aim to respond within one business day.</p>
     </section>
+
     <form class="enquiry-form" id="enquiry-form" method="post" action="https://formspree.io/f/mqazkdwz">
-      <ol class="form-steps" aria-label="Enquiry stages"><li class="form-step form-step--active"><span>01</span> Requirement</li><li class="form-step"><span>02</span> Buyer details</li><li class="form-step"><span>03</span> Submit enquiry</li></ol>
+      <ol class="form-steps" aria-label="Enquiry stages">
+        <li class="form-step form-step--active"><span>01</span> Requirement</li>
+        <li class="form-step"><span>02</span> Buyer details</li>
+        <li class="form-step"><span>03</span> Submit enquiry</li>
+      </ol>
       <fieldset>
         <legend>01 Requirement</legend>
         <label for="product_id">Product</label>
@@ -44,25 +56,35 @@ const selected = products.find((product) => product.id === selectedId);
         <label for="phone">Phone <span aria-hidden="true">*</span></label>
         <input id="phone" name="phone" type="tel" required autocomplete="tel" />
         <label class="check"><input type="checkbox" name="consent_contact" value="true" required /> I agree that Druckers Mart may use these details to respond to this enquiry.</label>
-      <p class="form-help">See the <a href="/privacy">Privacy Policy</a>.</p>
+        <p class="form-help">See the <a href="/privacy">Privacy Policy</a>.</p>
         <input type="hidden" name="privacy_policy_version" value="demo-v1" />
         <input type="hidden" name="form_started_at" id="form_started_at" />
         <label class="honeypot" aria-hidden="true">Leave this field empty<input name="honeypot" id="honeypot" tabindex="-1" autocomplete="off" /></label>
       </fieldset>
       <button class="button" type="submit" id="submit-button">Submit enquiry</button>
+      <div id="error-panel" class="notice notice--error" hidden role="alert">
+        <p>We couldn't submit your enquiry right now.</p>
+        <p>Please try again or contact us directly:</p>
+        <p><a href="tel:+919968275213">Call us: +91 99682 75213</a> · <a href="https://wa.me/919968275213">WhatsApp</a> · <a href="mailto:druckersmart@gmail.com">Email</a></p>
+      </div>
       <p class="form-status" id="form-status" role="status" hidden></p>
     </form>
     <section class="notice" id="success-panel" hidden aria-labelledby="success-title">
-      <h2 id="success-title">Enquiry submitted</h2>
-      <p>Thank you. Your enquiry has been sent to the Druckers Mart team. We aim to respond within one business day.</p>
-      <a class="button button--secondary" href="/products">Continue browsing products</a>
+      <h2 id="success-title">Enquiry received</h2>
+      <p>Thanks for contacting Druckers Mart. Our team will review your requirement and get back to you.</p>
+      <div class="actions">
+        <a class="button button--secondary" href="/products">Back to Products</a>
+        <a class="button" href="https://wa.me/919968275213" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
     </section>
     <AvailabilityPanel />
   </div>
 </SiteLayout>
+
 <script>
   const form = document.querySelector('#enquiry-form') as HTMLFormElement | null;
   const success = document.querySelector('#success-panel');
+  const errorPanel = document.querySelector('#error-panel');
   const started = document.querySelector('#form_started_at') as HTMLInputElement | null;
   const submitButton = document.querySelector('#submit-button') as HTMLButtonElement | null;
   const honeypot = document.querySelector('#honeypot') as HTMLInputElement | null;
@@ -72,16 +94,14 @@ const selected = products.find((product) => product.id === selectedId);
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    // Check honeypot
     if (honeypot && honeypot.value !== '') {
         console.error('Honeypot triggered');
-        return; // Silent fail for bots
+        return;
     }
 
     if (!form?.checkValidity()) { form?.reportValidity(); return; }
-
-    // Prevent double submission
     if (submitButton) submitButton.disabled = true;
+    if (errorPanel) errorPanel.setAttribute('hidden', 'true');
 
     try {
       const formData = new FormData(form);
@@ -99,21 +119,26 @@ const selected = products.find((product) => product.id === selectedId);
       }
     } catch {
       if (submitButton) submitButton.disabled = false;
-      alert('There was a problem sending your enquiry. Please try again or contact us directly via WhatsApp or email.');
+      if (errorPanel) errorPanel.removeAttribute('hidden');
     }
   });
 </script>
+
 <style>
-    .demo-notice { font-size: .9rem; color: var(--mineral-blue); background: #eef3f7; border: 1px solid var(--line); padding: .75rem 1rem; border-radius: 4px; margin-top: 1rem; }
+  .demo-notice { font-size: .9rem; color: var(--mineral-blue); background: #eef3f7; border: 1px solid var(--line); padding: .75rem 1rem; border-radius: 4px; margin-top: 1rem; }
+  .product-banner { margin: 1rem 0; padding: 1rem; background: #fffdf8; border: 2px solid var(--signal-orange); border-radius: 6px; }
+  .product-banner p { margin: 0; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--mineral-blue); }
+  .product-banner h3 { margin: 0.25rem 0 0; font-size: 1.25rem; }
   .hero { padding-bottom: 1.5rem; }
   .enquiry-form { display: grid; gap: 1.25rem; max-width: 48rem; }
   .form-steps { margin-bottom: 1rem; }
   fieldset { display: grid; gap: .6rem; border: 1px solid var(--line); padding: 1.25rem; background: #fffdf8; }
   legend { padding-inline: .4rem; font-weight: 800; }
-  input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--graphite); padding: .7rem; font: inherit; }
+  input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--graphite); padding: 0.75rem; font: inherit; min-height: 44px; }
   input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 2px; }
   .check { display: flex; gap: .6rem; align-items: flex-start; margin-top: .5rem; }
-  .check input { width: auto; margin-top: .25rem; }
+  .check input { width: auto; margin-top: .25rem; min-height: 1.2rem; }
   .form-help { font-size: .9rem; }
   .honeypot { position: absolute; left: -9999px; }
+  .notice--error { border-left: 4px solid var(--signal-orange); background: #fff3f0; padding: 1rem; margin-top: 1rem; }
 </style>
