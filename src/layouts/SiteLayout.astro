@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
+import { druckersBusiness } from '../data/druckers-business';
 const { title = 'Druckers Mart' } = Astro.props;
+const phoneDisplay = '+91 99682 75213';
+const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -32,6 +35,8 @@ const { title = 'Druckers Mart' } = Astro.props;
       "@type": "Organization",
       "name": "Druckers Mart Private Limited",
       "url": "https://druckersmart.com",
+      "email": druckersBusiness.email,
+      "telephone": druckersBusiness.phone,
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Baddi",
@@ -43,24 +48,47 @@ const { title = 'Druckers Mart' } = Astro.props;
   <body>
     <header class="site-header">
       <div class="container site-header__inner">
-        <a class="wordmark" href="/">DRUCKERS MART</a>
-        <div class="site-header__actions">
-          <a class="button button--small header-quote" href="/enquiry">Request quote</a>
-          <a class="header-phone" href="tel:+919968275213" aria-label="Call +91 99682 75213">📞 +91 99682 75213</a>
-          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
-            <span class="menu-toggle__icon" aria-hidden="true">☰</span><span class="menu-toggle__label">Menu</span>
-          </button>
-        </div>
+        <a class="wordmark" href="/" aria-label="Druckers Mart home">
+          <span class="wordmark__mark">DM</span>
+          <span class="wordmark__text">Druckers Mart</span>
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+          <span class="menu-toggle__label">Menu</span>
+          <span class="menu-toggle__icon" aria-hidden="true">☰</span>
+        </button>
         <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
           <a href="/products">Products</a>
           <a href="/about">About</a>
           <a href="/resources">Resources</a>
           <a href="/contact">Contact</a>
+          <a class="site-nav__mobile-contact" href={`tel:${druckersBusiness.phone}`}>{phoneDisplay}</a>
+          <a class="site-nav__mobile-contact" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp</a>
+          <a class="button button--small site-nav__cta" href="/enquiry">Request Quote</a>
         </nav>
+        <div class="site-header__contact" aria-label="Contact options">
+          <a class="header-phone" href={`tel:${druckersBusiness.phone}`}>{phoneDisplay}</a>
+          <a class="button button--small header-quote" href="/enquiry">Request Quote</a>
+        </div>
       </div>
     </header>
     <main><slot /></main>
-    <footer class="site-footer"><div class="container"><p>Druckers Mart Private Limited</p><p>Baddi, Solan, Himachal Pradesh, India</p><p><a href="tel:+919968275213">+91 99682 75213</a> · <a href="mailto:druckersmart@gmail.com">druckersmart@gmail.com</a></p><nav class="site-nav" aria-label="Footer navigation"><a href="/resources">Resources</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/returns">Returns</a><a href="/contact">Contact</a></nav></div></footer>
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <div>
+          <p class="site-footer__brand">Druckers Mart Private Limited</p>
+          <p>{druckersBusiness.location}</p>
+          <p><a href={`tel:${druckersBusiness.phone}`}>{phoneDisplay}</a> · <a href={`mailto:${druckersBusiness.email}`}>{druckersBusiness.email}</a></p>
+        </div>
+        <nav class="site-footer__nav" aria-label="Footer navigation">
+          <a href="/products">Products</a>
+          <a href="/resources">Resources</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/returns">Returns</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
+    </footer>
     <script>
       const header = document.querySelector('.site-header');
       const menuButton = document.querySelector('.menu-toggle') as HTMLButtonElement | null;
@@ -76,4 +104,3 @@ const { title = 'Druckers Mart' } = Astro.props;
     </script>
   </body>
 </html>
----
