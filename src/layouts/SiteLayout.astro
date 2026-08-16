@@ -4,14 +4,13 @@ import { druckersBusiness } from '../data/druckers-business';
 const { title = 'Druckers Mart' } = Astro.props;
 const phoneDisplay = '+91 99682 75213';
 const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}`;
-import { execSync } from "child_process";
-const commit = execSync("git rev-parse HEAD").toString().trim();
+const commit = import.meta.env.COMMIT_SHA || "unknown";
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta name="druckers-version" content="0.6.0" />
-    <meta name="druckers-commit" content={commit} />
+    <meta name="druckers-commit" content={import.meta.env.SOURCE_COMMIT} />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>

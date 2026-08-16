@@ -1,13 +1,13 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-const commit = "5a3123632fae6727269e0729ca99fe4c5e54a291";
+const commit = import.meta.env.COMMIT_SHA || "unknown";
 const version = "0.6.0";
 ---
 <SiteLayout title="Site Version | Druckers Mart">
   <div class="container">
     <h1>Druckers Mart</h1>
     <p>Version: {version}</p>
-    <p>Commit: {commit}</p>
+    <p>Commit: {import.meta.env.SOURCE_COMMIT}</p>
     <p>Branch: master</p>
   </div>
 </SiteLayout>
