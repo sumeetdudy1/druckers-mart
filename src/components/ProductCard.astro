@@ -5,33 +5,57 @@ import { productCategoryLabel } from '../data/products';
 const { product } = Astro.props as { product: ProductRecord };
 const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => field.verified);
 const categoryLabel = productCategoryLabel(product.category);
-const whatsappMsg = encodeURIComponent(`Enquiry about ${product.name} from Druckers Mart website.`);
+const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquire about ${product.name}.`);
 ---
 <article class="card" data-product-card data-category={product.category} data-availability={product.availability_status} data-search={`${product.name} ${product.category} ${verifiedSpecs.map(([key, field]) => `${key} ${field.value}`).join(' ')}`.toLowerCase()}>
-  <p class="eyebrow">{categoryLabel}</p>
-  <h3><a href={`/products/${product.id}`}>{product.name}</a></h3>
-  <AvailabilityBadge status={product.availability_status} />
+  <div class="card__header">
+    <p class="eyebrow card__category">{categoryLabel}</p>
+    <h3><a href={`/products/${product.id}`}>{product.name}</a></h3>
+    <AvailabilityBadge status={product.availability_status} />
+  </div>
+
   {verifiedSpecs.length > 0 && (
-    <dl>
-      {verifiedSpecs.map(([key, field]) => <div><dt>{key.replaceAll('_', ' ')}</dt><dd>{field.value}</dd></div>)}
-    </dl>
+    <div class="card__specs">
+      <dl>
+        {verifiedSpecs.map(([key, field]) => (
+          <div>
+            <dt>{key.replaceAll('_', ' ')}</dt>
+            <dd>{field.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   )}
-  <div class="card-actions">
-    <a class="button button--secondary" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+
+  <div class="card__actions">
+    <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
     <a class="button button--secondary whatsapp-btn" href={`https://wa.me/919968275213?text=${whatsappMsg}`} target="_blank" rel="noopener" aria-label={`WhatsApp about ${product.name}`}>WhatsApp</a>
   </div>
 </article>
 
 <style>
-  dl { margin: 1rem 0; }
-  dl div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--line); padding: .4rem 0; }
-  dt { color: #59636a; text-transform: capitalize; }
-  dd { margin: 0; font-weight: 600; }
-  .button { margin-top: .75rem; font-size: .9rem; }
-  .card-actions { display: flex; flex-direction: column; gap: .5rem; margin-top: .75rem; }
-  @media (max-width: 760px) {
-    dl { margin: 0.5rem 0; }
-    dl div { padding: 0.25rem 0; }
-    .button { margin-top: 0.5rem; }
+  .card {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    background: #fffdf9;
+    min-height: 280px;
   }
+  .card__header { display: flex; flex-direction: column; gap: 0.35rem; }
+  .card__category { margin: 0; }
+  .card__header h3 { margin: 0; font-size: 1.05rem; line-height: 1.3; }
+  .card__header h3 a { color: var(--graphite); text-decoration: none; }
+  .card__header h3 a:hover { color: var(--signal-orange); }
+  .card__specs { display: flex; flex-direction: column; }
+  .card__specs dl { margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+  .card__specs dl div { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+  .card__specs dl div:last-child { border-bottom: none; }
+  .card__specs dt { color: #59636a; text-transform: capitalize; font-size: 0.8rem; font-weight: 500; }
+  .card__specs dd { margin: 0; font-weight: 600; font-size: 0.85rem; color: var(--graphite); }
+  .card__actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.25rem; }
+  .card__actions .button { width: 100%; justify-content: center; }
+  .card__actions .whatsapp-btn { color: #25D366; border-color: #25D366; }
+  .card__actions .whatsapp-btn:hover { background: #25D366; color: #fff; }
 </style>

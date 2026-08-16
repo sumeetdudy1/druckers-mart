@@ -1,9 +1,9 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import AvailabilityBadge from '../../components/AvailabilityBadge.astro';
-import AvailabilityPanel from '../../components/AvailabilityPanel.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { publicProducts } from '../../data/products';
+import { publicProducts, productCategoryLabel } from '../../data/products';
+import { availabilityLabel } from '../../lib/availability';
 
 export function getStaticPaths() {
   return publicProducts().map((product) => ({ params: { id: product.id }, props: { product } }));
@@ -13,54 +13,195 @@ const { product } = Astro.props;
 const allProducts = publicProducts();
 const verifiedSpecs = Object.entries(product.specs ?? {}).filter(([, field]) => field.verified);
 const relatedProducts = allProducts.filter((candidate) => candidate.category === product.category && candidate.id !== product.id).slice(0, 3);
-const categoryLabel = product.category === 'pre-press' ? 'Pre-press' : product.category === 'post-press' ? 'Post-press' : 'Press';
+const categoryLabel = productCategoryLabel(product.category);
+const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquire about ${product.name}.`);
+const whatsappUrl = `https://wa.me/919968275213?text=${whatsappMsg}`;
+const availabilityDisplay = availabilityLabel(product.availability_status);
 ---
 <SiteLayout title={`${product.name} | Druckers Mart`}>
   <div class="container">
-    <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": product.name,
-      "description": "Availability, lead time and delivery are confirmed after enquiry.",
-      "sku": product.id,
-      "category": categoryLabel,
-      "offers": {
-        "@type": "Offer",
-        "availability": "https://schema.org/InStock",
-        "url": `https://druckersmart.com/products/${product.id}`,
-        "seller": {
-          "@type": "Organization",
-          "name": "Druckers Mart Private Limited"
-        }
-      }
-    })} />
-    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/products">Products</a><span aria-hidden="true">/</span><a href={`/products?category=${product.category}`}>{categoryLabel}</a><span aria-hidden="true">/</span><span>{product.name}</span></nav>
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="/products">Products</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/products?category=${product.category}`}>{categoryLabel}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{product.name}</span>
+    </nav>
+
+    <!-- Product Detail Layout -->
     <div class="product-detail-layout">
-      <section class="product-detail-main">
-        <p class="eyebrow">{categoryLabel}</p>
-        <h1>{product.name}</h1>
-        <AvailabilityBadge status={product.availability_status} />
-        <p class="lede">Availability, lead time and delivery are confirmed after enquiry.</p>
-        {verifiedSpecs.length > 0 && <table class="specs"><caption>Source-listed information</caption><tbody>{verifiedSpecs.map(([key, field]) => <tr><th scope="row">{key.replaceAll('_', ' ')}</th><td>{field.value}</td></tr>)}</tbody></table>}
-      </section>
-      <aside class="product-detail-aside" aria-label="Product enquiry">
-        <AvailabilityPanel />
-        <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+      <main class="product-detail-main">
+        <!-- Category + Name + Availability -->
+        <header class="product-header">
+          <p class="eyebrow product-header__category">{categoryLabel}</p>
+          <h1 class="product-header__name">{product.name}</h1>
+          <AvailabilityBadge status={product.availability_status} />
+          <p class="product-header__availability-label">{availabilityDisplay}</p>
+        </header>
+
+        <!-- Key Specifications -->
+        {verifiedSpecs.length > 0 && (
+          <section class="product-specs" aria-labelledby="specs-title">
+            <h2 id="specs-title" class="visually-hidden">Key specifications</h2>
+            <dl class="specs-list">
+              {verifiedSpecs.map(([key, field]) => (
+                <div class="spec-item">
+                  <dt>{key.replaceAll('_', ' ')}</dt>
+                  <dd>{field.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        <!-- Short factual description -->
+        <section class="product-description" aria-labelledby="desc-title">
+          <h2 id="desc-title" class="visually-hidden">Product information</h2>
+          <p>{product.application?.verified ? product.application.value : 'This product is sourced for production workflows. Exact availability, pricing, and delivery are confirmed after enquiry.'}</p>
+        </section>
+
+        <!-- Primary + Secondary CTAs -->
+        <div class="product-cta-group">
+          <a class="button button--primary" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+          <a class="button button--secondary whatsapp-btn" href={whatsappUrl} target="_blank" rel="noopener" aria-label={`WhatsApp about ${product.name}`}>WhatsApp</a>
+        </div>
+
+        <!-- Full Product Information -->
+        <section class="product-info" aria-labelledby="info-title">
+          <h2 id="info-title">Product information</h2>
+          <table class="specs" aria-label="Full product specifications">
+            <thead>
+              <tr><th scope="col">Property</th><th scope="col">Value</th></tr>
+            </thead>
+            <tbody>
+              {verifiedSpecs.map(([key, field]) => (
+                <tr>
+                  <th scope="row">{key.replaceAll('_', ' ')}</th>
+                  <td>{field.value}</td>
+                </tr>
+              ))}
+              {product.pack_sizes && product.pack_sizes.length > 0 && product.pack_sizes.map((pack) => pack.verified && (
+                <tr><th scope="row">Pack size</th><td>{pack.value}</td></tr>
+              ))}
+              {product.size && product.size.verified && (
+                <tr><th scope="row">Size</th><td>{product.size.value}</td></tr>
+              )}
+              {product.weight && product.weight.verified && (
+                <tr><th scope="row">Weight</th><td>{product.weight.value}</td></tr>
+              )}
+              {product.volume && product.volume.verified && (
+                <tr><th scope="row">Volume</th><td>{product.volume.value}</td></tr>
+              )}
+              {product.lead_time_note && product.lead_time_note.verified && (
+                <tr><th scope="row">Lead time note</th><td>{product.lead_time_note.value}</td></tr>
+              )}
+              <tr>
+                <th scope="row">Availability status</th>
+                <td><AvailabilityBadge status={product.availability_status} /></td>
+              </tr>
+              <tr>
+                <th scope="row">Source reference</th>
+                <td>{product.source_ref}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Related Products -->
+        {relatedProducts.length > 0 && (
+          <section class="related-products" aria-labelledby="related-title">
+            <h2 id="related-title">Related products</h2>
+            <div class="grid related-grid">{relatedProducts.map((product) => <ProductCard product={product} />)}</div>
+          </section>
+        )}
+
+        <!-- Final Enquiry CTA -->
+        <section class="final-cta" aria-labelledby="final-cta-title">
+          <h2 id="final-cta-title">Ready to enquire?</h2>
+          <p>Tell us the quantity and delivery location. We'll confirm availability, pricing, and next steps.</p>
+          <div class="actions">
+            <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+            <a class="button button--secondary" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp Us</a>
+          </div>
+        </section>
+      </main>
+
+      <aside class="product-detail-aside" aria-labelledby="aside-title">
+        <section class="aside-panel" id="aside-title">
+          <h3>Availability & lead time</h3>
+          <p>Listed products can be sourced on demand from Baddi, subject to confirmation after enquiry or order.</p>
+          <ul class="availability-list">
+            <li>In Stock</li>
+            <li>Availability to be Confirmed</li>
+          </ul>
+          <p>In-stock material may generally be delivered the same day from Baddi against advance payment, subject to order timing and logistics.</p>
+          <p>Lead time: up to 7 business days.</p>
+          <p>Exact availability, lead time and delivery are confirmed after your enquiry. Coverage and logistics charges are communicated on request.</p>
+        </section>
+        <div class="aside-cta">
+          <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote / Check Availability</a>
+        </div>
       </aside>
     </div>
-    {relatedProducts.length > 0 && <section class="related" aria-labelledby="related-title"><h2 id="related-title">More {categoryLabel.toLowerCase()} products</h2><div class="grid">{relatedProducts.map((related) => <ProductCard product={related} />)}</div></section>}
   </div>
 </SiteLayout>
+
 <style>
-  .breadcrumbs { display: flex; gap: .55rem; flex-wrap: wrap; font-size: .9rem; margin-bottom: 1rem; }
-  .product-detail-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
-  .product-detail-main h1 { max-width: 18ch; }
-  .product-detail-aside { position: sticky; top: 1rem; }
-  .product-detail-aside .notice { margin-top: 0; }
-  .specs { width: 100%; max-width: 42rem; border-collapse: collapse; margin-block: 1.5rem; background: #fffdf8; }
-  .specs caption { text-align: left; font-weight: 800; padding: .75rem 0; }
-  .specs th, .specs td { border: 1px solid var(--line); padding: .7rem; text-align: left; }
-  .related { margin-top: 3rem; }
-  @media (max-width: 760px) { .product-detail-layout { grid-template-columns: 1fr; gap: 1rem; } .product-detail-aside { position: static; } }
+  .product-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr);
+    align-items: start;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .product-header { margin-bottom: 1.5rem; }
+  .product-header__category { margin-bottom: 0.35rem; }
+  .product-header__name { margin: 0 0 0.5rem; font-size: clamp(1.6rem, 3vw, 2.4rem); }
+  .product-header__availability-label { margin: 0.25rem 0 0; font-size: 0.9rem; color: #59636a; }
+  .product-specs { margin-bottom: 1.5rem; padding: 1rem; background: #fffdf8; border: 1px solid var(--line); border-radius: 6px; }
+  .specs-list { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0; }
+  .spec-item { display: flex; flex-direction: column; gap: 0.2rem; min-width: 120px; }
+  .spec-item dt { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mineral-blue); }
+  .spec-item dd { margin: 0; font-weight: 600; color: var(--graphite); }
+  .product-description { margin-bottom: 1.5rem; line-height: 1.7; color: #4a545a; }
+  .product-cta-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; padding: 1rem; background: #fffdf8; border: 1px solid var(--line); border-radius: 6px; }
+  .product-cta-group .button { width: 100%; justify-content: center; }
+  .product-cta-group .whatsapp-btn { color: #25D366; border-color: #25D366; }
+  .product-cta-group .whatsapp-btn:hover { background: #25D366; color: #fff; }
+  .product-info { margin-bottom: 2rem; }
+  .product-info h2 { font-size: 1.35rem; margin-bottom: 1rem; }
+  .specs { border-collapse: collapse; width: 100%; }
+  .specs th, .specs td { border-bottom: 1px solid var(--line); padding: 0.65rem; text-align: left; }
+  .specs th { width: 35%; color: #59636a; font-weight: 500; font-size: 0.9rem; }
+  .specs td { font-weight: 600; color: var(--graphite); font-size: 0.9rem; }
+  .specs tbody tr:last-child th, .specs tbody tr:last-child td { border-bottom: none; }
+  .related-products { margin-bottom: 2rem; }
+  .related-products h2 { font-size: 1.35rem; margin-bottom: 1rem; }
+  .related-grid { grid-template-columns: repeat(3, 1fr); }
+  .final-cta { padding: 1.5rem; background: var(--graphite); color: #fff; border-radius: 8px; text-align: center; }
+  .final-cta h2 { color: #fff; margin-bottom: 0.5rem; }
+  .final-cta p { margin: 0 0 1rem; color: #c9d1d6; }
+  .final-cta .actions { justify-content: center; }
+  .final-cta .button--secondary { border-color: #fff; color: #fff; }
+  .final-cta .button--secondary:hover { background: #fff; color: var(--graphite); }
+  .aside-panel { position: sticky; top: 1.5rem; background: #fffdf8; border: 1px solid var(--line); border-radius: 8px; padding: 1.25rem; }
+  .aside-panel h3 { margin: 0 0 0.75rem; font-size: 1rem; }
+  .aside-panel p { margin: 0 0 0.75rem; font-size: 0.9rem; line-height: 1.6; color: #4a545a; }
+  .aside-panel ul { margin: 0 0 1rem; padding-left: 1.25rem; font-size: 0.9rem; }
+  .aside-panel li { margin: 0.25rem 0; }
+  .aside-cta { margin-top: 1rem; }
+  .aside-cta .button { width: 100%; justify-content: center; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+  @media (max-width: 760px) {
+    .product-detail-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+    .product-detail-aside { position: static; }
+    .product-cta-group { flex-direction: row; flex-wrap: wrap; }
+    .product-cta-group .button { width: auto; flex: 1; min-width: 140px; }
+    .related-grid { grid-template-columns: 1fr; }
+    .specs-list { flex-direction: column; gap: 0.5rem; }
+    .spec-item { flex-direction: row; justify-content: space-between; min-width: 0; }
+  }
 </style>
----
