@@ -18,7 +18,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; width: 100%; box-sizing: border-box; background: var(--off-white); }
+body { margin: 0; width: 100%; box-sizing: border-box; background: var(--off-white); overflow-x: hidden; }
 a { color: var(--mineral-blue); }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 3px; }
 .container { width: min(calc(100% - 2rem), var(--content-width)); margin-inline: auto; }

@@ -40,9 +40,9 @@ const categoryLabels = { '': 'All stages', 'pre-press': 'Pre-press', press: 'Pre
       <p class="lede">Browse the initial catalogue. Products can be sourced on demand from Baddi; availability is confirmed after enquiry or order.</p>
     </section>
     <form class="filters" method="get" action="/products" aria-label="Filter products">
-      <label>Search products<input type="search" name="q" value={query} placeholder="Search by product or specification" /></label>
-      <label>Production stage<select name="category"><option value="">All stages</option><option value="pre-press" selected={category === 'pre-press'}>Pre-press</option><option value="press" selected={category === 'press'}>Press</option><option value="post-press" selected={category === 'post-press'}>Post-press</option></select></label>
-      <label>Availability<select name="availability"><option value="">All statuses</option><option value="availability_to_be_confirmed" selected={availability === 'availability_to_be_confirmed'}>Availability to be Confirmed</option><option value="in_stock" selected={availability === 'in_stock'}>In Stock</option></select></label>
+      <label for="q">Search products<input type="search" id="q" name="q" value={query} placeholder="Search by product or specification" /></label>
+      <label for="category">Production stage<select id="category" name="category"><option value="">All stages</option><option value="pre-press" selected={category === 'pre-press'}>Pre-press</option><option value="press" selected={category === 'press'}>Press</option><option value="post-press" selected={category === 'post-press'}>Post-press</option></select></label>
+      <label for="availability">Availability<select id="availability" name="availability"><option value="">All statuses</option><option value="availability_to_be_confirmed" selected={availability === 'availability_to_be_confirmed'}>Availability to be Confirmed</option><option value="in_stock" selected={availability === 'in_stock'}>In Stock</option></select></label>
       <button class="button" type="submit">Apply filters</button>
       <a class="button button--secondary" href="/products">Clear</a>
     </form>

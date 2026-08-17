@@ -55,7 +55,10 @@ const selected = products.find((product) => product.id === selectedId);
         <input id="work_email" name="work_email" type="email" required autocomplete="email" />
         <label for="phone">Phone <span aria-hidden="true">*</span></label>
         <input id="phone" name="phone" type="tel" required autocomplete="tel" />
-        <label class="check"><input type="checkbox" name="consent_contact" value="true" required /> I agree that Druckers Mart may use these details to respond to this enquiry.</label>
+        <div class="check">
+          <input type="checkbox" id="consent_contact" name="consent_contact" value="true" required />
+          <label for="consent_contact">I agree that Druckers Mart may use these details to respond to this enquiry.</label>
+        </div>
         <p class="form-help">See the <a href="/privacy">Privacy Policy</a>.</p>
         <input type="hidden" name="privacy_policy_version" value="demo-v1" />
         <input type="hidden" name="form_started_at" id="form_started_at" />

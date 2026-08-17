@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { druckersBusiness } from '../data/druckers-business';
-const { title = 'Druckers Mart' } = Astro.props;
+const { title = 'Druckers Mart', description = 'Druckers Mart product catalogue and availability enquiry.' } = Astro.props;
 const phoneDisplay = '+91 99682 75213';
 const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}`;
 const commit = import.meta.env.COMMIT_SHA || "unknown";
@@ -14,14 +14,17 @@ const commit = import.meta.env.COMMIT_SHA || "unknown";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
-    <meta name="description" content="Druckers Mart product catalogue and availability enquiry." />
+    <meta name="description" content={description} />
     <link rel="canonical" href={`https://druckersmart.com${Astro.url.pathname}`} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Druckers Mart" />
     <meta property="og:title" content={title} />
-    <meta property="og:description" content="Druckers Mart product catalogue and availability enquiry." />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content={`https://druckersmart.com${Astro.url.pathname}`} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
