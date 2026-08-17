@@ -2,6 +2,7 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import AvailabilityPanel from '../components/AvailabilityPanel.astro';
 import { publicProducts } from '../data/products';
+import { ENQUIRY_ENDPOINT } from '../lib/api-config';
 
 const products = publicProducts();
 const selectedId = Astro.url.searchParams.get('product') ?? '';
@@ -23,7 +24,7 @@ const selected = products.find((product) => product.id === selectedId);
       <p class="demo-notice">Enquiries are sent to our team at druckersmart@gmail.com. We aim to respond within one business day.</p>
     </section>
 
-    <form class="enquiry-form" id="enquiry-form" method="post" action="https://formspree.io/f/mqazkdwz">
+    <form class="enquiry-form" id="enquiry-form" method="post" action={ENQUIRY_ENDPOINT}>
       <ol class="form-steps" aria-label="Enquiry stages">
         <li class="form-step form-step--active"><span>01</span> Requirement</li>
         <li class="form-step"><span>02</span> Buyer details</li>
@@ -68,7 +69,7 @@ const selected = products.find((product) => product.id === selectedId);
       <div id="error-panel" class="notice notice--error" hidden role="alert">
         <p>We couldn't submit your enquiry right now.</p>
         <p>Please try again or contact us directly:</p>
-        <p><a href="tel:+919968275213">Call us: +91 99682 75213</a> · <a href="https://wa.me/919968275213">WhatsApp</a> · <a href="mailto:druckersmart@gmail.com">Email</a></p>
+        <p><a href="tel:+919****5213">Call us: +91 99682 75213</a> · <a href="https://wa.me/919968275213">WhatsApp</a> · <a href="mailto:druckersmart@gmail.com">Email</a></p>
       </div>
       <p class="form-status" id="form-status" role="status" hidden></p>
     </form>
@@ -84,7 +85,7 @@ const selected = products.find((product) => product.id === selectedId);
   </div>
 </SiteLayout>
 
-<script>
+<script define:vars={{ ENQUIRY_ENDPOINT }}>
   const form = document.querySelector('#enquiry-form') as HTMLFormElement | null;
   const success = document.querySelector('#success-panel');
   const errorPanel = document.querySelector('#error-panel');
@@ -103,15 +104,37 @@ const selected = products.find((product) => product.id === selectedId);
     }
 
     if (!form?.checkValidity()) { form?.reportValidity(); return; }
-    if (submitButton) submitButton.disabled = true;
+
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...';
+    }
     if (errorPanel) errorPanel.setAttribute('hidden', 'true');
 
     try {
       const formData = new FormData(form);
-      const response = await fetch(form.action, {
+      const data = Object.fromEntries(formData.entries());
+
+      const payload = {
+        product_id: data.product_id || null,
+        quantity_requirement: data.quantity_requirement,
+        delivery_location: data.delivery_location,
+        required_by_date: data.required_by_date || null,
+        additional_notes: data.additional_notes || null,
+        buyer_name: data.buyer_name,
+        company: data.company || null,
+        work_email: data.work_email,
+        phone: data.phone,
+        consent_contact: data.consent_contact === 'true',
+        privacy_policy_version: data.privacy_policy_version,
+        honeypot: data.honeypot || null,
+        form_started_at: data.form_started_at
+      };
+
+      const response = await fetch(ENQUIRY_ENDPOINT, {
         method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
       });
 
       if (response.ok) {
@@ -120,8 +143,12 @@ const selected = products.find((product) => product.id === selectedId);
       } else {
         throw new Error('Submission failed');
       }
-    } catch {
-      if (submitButton) submitButton.disabled = false;
+    } catch (err) {
+      console.error(err);
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit enquiry';
+      }
       if (errorPanel) errorPanel.removeAttribute('hidden');
     }
   });
