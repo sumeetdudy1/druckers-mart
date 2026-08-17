@@ -1,15 +1,16 @@
 :root {
-  --graphite: #1e252b;
-  --off-white: #f5f2eb;
-  --mineral-blue: #24526a;
-  --signal-orange: #e86f2d;
-  --status-green: #1f6b4a;
-  --muted-amber: #8b641d;
-  --line: #d9d4ca;
-  --content-width: 1240px;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  --graphite: #0f172a;
+  --off-white: #f8fafc;
+  --mineral-blue: #0f766e;
+  --signal-orange: #f97316;
+  --status-green: #15803d;
+  --muted-amber: #b45309;
+  --line: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --content-width: 1280px;
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--graphite);
-  background: var(--off-white);
+  background: var(--white);
 
   /* Stage-specific colors */
   --stage-pre-press: var(--signal-orange);
