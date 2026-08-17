@@ -38,6 +38,7 @@ export interface ProductRecord {
   weight?: VerifiedValue;
   volume?: VerifiedValue;
   lead_time_note?: VerifiedValue;
+  imagePath?: string;
   images?: Array<{
     src: string;
     alt: string;

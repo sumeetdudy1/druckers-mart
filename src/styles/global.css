@@ -177,7 +177,11 @@ h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
   .home-hero h1 { font-size: clamp(1.8rem, 7vw, 2.6rem); }
 }
 
-/* ===== PHASE 4/5 ENHANCEMENTS ===== */
+.product-placeholder { display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 2rem; }
+.product-placeholder--pre-press { background-color: var(--stage-pre-press); }
+.product-placeholder--press { background-color: var(--stage-press); }
+.product-placeholder--post-press { background-color: var(--stage-post-press); }
+
 .card--pre-press { border-top: 3px solid var(--stage-pre-press); }
 .card--press { border-top: 3px solid var(--stage-press); }
 .card--post-press { border-top: 3px solid var(--stage-post-press); }
