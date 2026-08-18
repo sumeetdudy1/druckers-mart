@@ -85,13 +85,14 @@ const selected = products.find((product) => product.id === selectedId);
   </div>
 </SiteLayout>
 
-<script define:vars={{ ENQUIRY_ENDPOINT }} lang="ts">
-  const form = document.querySelector<HTMLFormElement>('#enquiry-form');
+<script is:inline>
+  const ENQUIRY_ENDPOINT = "https://api.druckersmart.com/api/enquiries";
+  const form = document.querySelector('#enquiry-form');
   const success = document.querySelector('#success-panel');
   const errorPanel = document.querySelector('#error-panel');
-  const started = document.querySelector<HTMLInputElement>('#form_started_at');
-  const submitButton = document.querySelector<HTMLButtonElement>('#submit-button');
-  const honeypot = document.querySelector<HTMLInputElement>('#honeypot');
+  const started = document.querySelector('#form_started_at');
+  const submitButton = document.querySelector('#submit-button');
+  const honeypot = document.querySelector('#honeypot');
 
   if (started) started.value = new Date().toISOString();
 
@@ -112,6 +113,7 @@ const selected = products.find((product) => product.id === selectedId);
     if (errorPanel) errorPanel.setAttribute('hidden', 'true');
 
     try {
+      console.log('Fetching', ENQUIRY_ENDPOINT);
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
@@ -135,16 +137,22 @@ const selected = products.find((product) => product.id === selectedId);
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+      }).catch(err => {
+        console.error('Fetch error:', err);
+        return { ok: false, status: 0, text: () => Promise.resolve(err.message) };
       });
-
+      console.log('Response status:', response.status);
+      const text = typeof response.text === 'function' ? await response.text() : 'No response text';
+      console.log('Response text:', text);
       if (response.ok) {
-        form.hidden = true;
+        console.log('Submission successful');
+        form.classList.add('hidden-form');
         success?.removeAttribute('hidden');
       } else {
-        throw new Error('Submission failed');
+        throw new Error('Submission failed: ' + text);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Submission error:', err);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.textContent = 'Submit enquiry';
@@ -162,8 +170,8 @@ const selected = products.find((product) => product.id === selectedId);
   .hero { padding-bottom: 1.5rem; }
   .enquiry-form { display: grid; gap: 1.25rem; max-width: 48rem; }
   .form-steps { margin-bottom: 1rem; }
-  fieldset { display: grid; gap: .6rem; border: 1px solid var(--line); padding: 1.25rem; background: #fffdf8; }
-  legend { padding-inline: .4rem; font-weight: 800; }
+  fieldset { display: grid; gap: 1rem; border: none; padding: 0; margin-bottom: 2rem; }
+  legend { font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; padding: 0; }
   input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--graphite); padding: 0.75rem; font: inherit; min-height: 44px; }
   input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 2px; }
   .check { display: flex; gap: .6rem; align-items: flex-start; margin-top: .5rem; }
@@ -171,4 +179,5 @@ const selected = products.find((product) => product.id === selectedId);
   .form-help { font-size: .9rem; }
   .honeypot { position: absolute; left: -9999px; }
   .notice--error { border-left: 4px solid var(--signal-orange); background: #fff3f0; padding: 1rem; margin-top: 1rem; }
+  .hidden-form { display: none !important; }
 </style>
