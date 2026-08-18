@@ -1,5 +1,5 @@
 import type { ProductRecord, ProductCategory } from './product-schema';
-import { agkCatalogueSource } from './agk-catalogue-source';
+import { agkCatalogueSource } from './agk-catalogue-source.ts';
 
 /**
  * Initial Druckers live-demo catalogue, seeded from the approved AGK source.

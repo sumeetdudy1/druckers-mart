@@ -4,7 +4,7 @@ import ProductCard from '../components/ProductCard.astro';
 import { publicProducts } from '../data/products';
 import { druckersBusiness } from '../data/druckers-business';
 const products = publicProducts();
-const featuredProducts = products.slice(0, 4);
+const featuredProducts = products.slice(0, 3);
 const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}`;
 ---
 <SiteLayout title="Druckers Mart | Printing & Packaging Supplies">
@@ -12,11 +12,11 @@ const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}
     <div class="container">
       <div class="home-hero__content">
         <p class="eyebrow">Professional Industrial Supplies</p>
-        <h1 style="font-size: 3.5rem; letter-spacing: -0.02em;">Precision Printing & Packaging Supplies.</h1>
-        <p class="lede" style="font-size: 1.25rem;">Sourced for production, confirmed upon enquiry. Your reliable B2B partner in Baddi.</p>
+        <h1 style="font-size: 3.5rem; letter-spacing: -0.02em;">Printing & Packaging Production Supplies.</h1>
+        <p class="lede" style="font-size: 1.25rem;">Industrial consumables, sourced directly for commercial printing and packaging production.</p>
         <div class="actions" style="margin-top: 2rem;">
           <a class="button" href="/enquiry">Request Quote</a>
-          <a class="button button--secondary" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp</a>
+          <a class="button button--secondary" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp Enquiry</a>
         </div>
       </div>
     </div>

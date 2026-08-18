@@ -38,8 +38,9 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--signal-orange);
 .site-nav a:hover, .site-nav a:focus-visible { color: var(--signal-orange); }
 .site-nav__mobile-contact { display: none; }
 .site-nav__cta { display: none; }
-
+  
 .site-header__contact { display: flex; align-items: center; gap: .75rem; margin-left: auto; }
+.site-nav__cta { display: inline-flex; }
 .header-phone { font-size: .85rem; color: var(--mineral-blue); text-decoration: none; white-space: nowrap; font-weight: 600; }
 .header-quote { display: inline-flex; }
 
@@ -87,10 +88,10 @@ main { padding-block: 3rem; }
 .stage-arrow { display: grid; place-items: center; color: var(--signal-orange); font-size: 1.5rem; }
 
 /* ===== FEATURED GRID ===== */
-.featured-grid { grid-template-columns: repeat(4, 1fr); }
-.featured-grid .card { padding: 1.25rem; }
-.featured-grid .card h3 { font-size: 1.05rem; line-height: 1.3; }
-.featured-grid .card-actions { margin-top: 1rem; }
+.featured-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.featured-grid .card { padding: 1.5rem; }
+.featured-grid .card h3 { font-size: 1.1rem; line-height: 1.3; }
+.featured-grid .card-actions { margin-top: 1.25rem; }
 
 /* ===== PROCESS GRID (how it works) ===== */
 .process-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }

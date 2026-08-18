@@ -85,13 +85,13 @@ const selected = products.find((product) => product.id === selectedId);
   </div>
 </SiteLayout>
 
-<script define:vars={{ ENQUIRY_ENDPOINT }}>
-  const form = document.querySelector('#enquiry-form') as HTMLFormElement | null;
+<script define:vars={{ ENQUIRY_ENDPOINT }} lang="ts">
+  const form = document.querySelector<HTMLFormElement>('#enquiry-form');
   const success = document.querySelector('#success-panel');
   const errorPanel = document.querySelector('#error-panel');
-  const started = document.querySelector('#form_started_at') as HTMLInputElement | null;
-  const submitButton = document.querySelector('#submit-button') as HTMLButtonElement | null;
-  const honeypot = document.querySelector('#honeypot') as HTMLInputElement | null;
+  const started = document.querySelector<HTMLInputElement>('#form_started_at');
+  const submitButton = document.querySelector<HTMLButtonElement>('#submit-button');
+  const honeypot = document.querySelector<HTMLInputElement>('#honeypot');
 
   if (started) started.value = new Date().toISOString();
 
