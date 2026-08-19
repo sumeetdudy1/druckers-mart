@@ -9,8 +9,8 @@ const selectedId = Astro.url.searchParams.get('product') ?? '';
 const selected = products.find((product) => product.id === selectedId);
 ---
 <SiteLayout title="Request a quote | Druckers Mart">
-  <div class="container">
-    <section class="hero">
+  <div class="container enquiry-page">
+    <section class="hero enquiry-hero">
       <p class="eyebrow">Enquiry</p>
       <h1>Tell us what you need.</h1>
       {selected ? (
@@ -31,7 +31,7 @@ const selected = products.find((product) => product.id === selectedId);
         <li class="form-step"><span>03</span> Submit enquiry</li>
       </ol>
       <fieldset>
-        <legend>01 Requirement</legend>
+        <legend>Requirement details</legend>
         <label for="product_id">Product</label>
         <select id="product_id" name="product_id">
           <option value="">I am enquiring about a general requirement</option>
@@ -47,7 +47,7 @@ const selected = products.find((product) => product.id === selectedId);
         <textarea id="additional_notes" name="additional_notes" rows="4"></textarea>
       </fieldset>
       <fieldset>
-        <legend>02 Buyer details</legend>
+        <legend>Buyer details</legend>
         <label for="buyer_name">Your name <span aria-hidden="true">*</span></label>
         <input id="buyer_name" name="buyer_name" required autocomplete="name" />
         <label for="company">Company</label>
@@ -73,14 +73,16 @@ const selected = products.find((product) => product.id === selectedId);
       </div>
       <p class="form-status" id="form-status" role="status" hidden></p>
     </form>
-    <section class="notice" id="success-panel" hidden aria-labelledby="success-title">
+
+    <section class="notice notice--success" id="success-panel" hidden aria-labelledby="success-title">
       <h2 id="success-title">Enquiry received</h2>
       <p>Thanks for contacting Druckers Mart. Our team will review your requirement and get back to you.</p>
       <div class="actions">
-        <a class="button button--secondary" href="/products">Back to Products</a>
-        <a class="button" href="https://wa.me/919968275213" target="_blank" rel="noopener">WhatsApp Us</a>
+        <a class="button" href="/products">Back to Products</a>
+        <a class="button button--secondary" href="https://wa.me/919968275213" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
     </section>
+    
     <AvailabilityPanel />
   </div>
 </SiteLayout>
@@ -113,7 +115,6 @@ const selected = products.find((product) => product.id === selectedId);
     if (errorPanel) errorPanel.setAttribute('hidden', 'true');
 
     try {
-      console.log('Fetching', ENQUIRY_ENDPOINT);
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
@@ -141,18 +142,15 @@ const selected = products.find((product) => product.id === selectedId);
         console.error('Fetch error:', err);
         return { ok: false, status: 0, text: () => Promise.resolve(err.message) };
       });
-      console.log('Response status:', response.status);
-      const text = typeof response.text === 'function' ? await response.text() : 'No response text';
-      console.log('Response text:', text);
+      
       if (response.ok) {
-        console.log('Submission successful');
         form.classList.add('hidden-form');
         success?.removeAttribute('hidden');
       } else {
+        const text = await response.text();
         throw new Error('Submission failed: ' + text);
       }
     } catch (err) {
-      console.error('Submission error:', err);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.textContent = 'Submit enquiry';
@@ -163,21 +161,35 @@ const selected = products.find((product) => product.id === selectedId);
 </script>
 
 <style>
-  .demo-notice { font-size: .9rem; color: var(--mineral-blue); background: #eef3f7; border: 1px solid var(--line); padding: .75rem 1rem; border-radius: 4px; margin-top: 1rem; }
-  .product-banner { margin: 1rem 0; padding: 1rem; background: #fffdf8; border: 2px solid var(--signal-orange); border-radius: 6px; }
-  .product-banner p { margin: 0; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--mineral-blue); }
-  .product-banner h3 { margin: 0.25rem 0 0; font-size: 1.25rem; }
-  .hero { padding-bottom: 1.5rem; }
-  .enquiry-form { display: grid; gap: 1.25rem; max-width: 48rem; }
-  .form-steps { margin-bottom: 1rem; }
-  fieldset { display: grid; gap: 1rem; border: none; padding: 0; margin-bottom: 2rem; }
-  legend { font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; padding: 0; }
-  input, select, textarea { width: 100%; border: 1px solid var(--line); background: #fff; color: var(--graphite); padding: 0.75rem; font: inherit; min-height: 44px; }
+  .enquiry-page { padding-block: var(--space-xl); }
+  .enquiry-hero { margin-bottom: var(--space-xl); }
+  
+  .enquiry-form { display: grid; gap: var(--space-lg); max-width: 48rem; }
+  .form-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); list-style: none; padding: 0; margin-bottom: var(--space-xl); }
+  .form-step { border-top: 3px solid var(--line); padding-top: var(--space-sm); color: #64748b; font-weight: 700; font-size: var(--text-sm); }
+  .form-step span { display: block; color: var(--signal-orange); font-size: var(--text-xs); letter-spacing: 0.08em; }
+  .form-step--active { border-color: var(--signal-orange); color: var(--graphite); }
+  
+  fieldset { display: grid; gap: var(--space-md); border: none; padding: 0; margin-bottom: var(--space-xl); }
+  legend { font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--space-md); }
+  
+  input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--space-sm); font: inherit; min-height: 3rem; }
   input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 2px; }
-  .check { display: flex; gap: .6rem; align-items: flex-start; margin-top: .5rem; }
-  .check input { width: auto; margin-top: .25rem; min-height: 1.2rem; }
-  .form-help { font-size: .9rem; }
-  .honeypot { position: absolute; left: -9999px; }
-  .notice--error { border-left: 4px solid var(--signal-orange); background: #fff3f0; padding: 1rem; margin-top: 1rem; }
+  
+  .check { display: flex; gap: var(--space-sm); align-items: flex-start; margin-top: var(--space-sm); }
+  .check input { width: auto; min-height: 1.2rem; }
+  
+  .notice--success { background: #f0fdf4; border: 1px solid var(--status-green); color: var(--graphite); padding: var(--space-lg); border-radius: var(--radius-md); }
+  .notice--error { background: #fff3f0; border-left: 4px solid var(--signal-orange); padding: var(--space-lg); }
+  
+  .product-banner { margin-bottom: var(--space-md); padding: var(--space-md); background: var(--off-white); border: 1px solid var(--line); border-radius: var(--radius-md); }
+  .product-banner p { margin: 0; font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; color: var(--mineral-blue); }
+  .product-banner h3 { margin: 0.25rem 0 0; font-size: var(--text-lg); }
+  
   .hidden-form { display: none !important; }
+  
+  @media (max-width: 760px) {
+    .form-steps { grid-template-columns: 1fr; gap: var(--space-xs); }
+    .form-step { border-top: none; border-left: 3px solid var(--line); padding: var(--space-xs) var(--space-sm); }
+  }
 </style>
