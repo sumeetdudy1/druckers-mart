@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Layout Stability Analysis', () => {
   const pages = [
-    { name: 'home', url: '/' },
-    { name: 'products', url: '/products' },
-    { name: 'product-detail', url: '/products/pre-press-plate-470-620' },
+    { name: 'home', url: 'http://localhost:4321/' },
+    { name: 'products', url: 'http://localhost:4321/products' },
+    { name: 'product-detail', url: 'http://localhost:4321/products/pre-press-plate-470-620' },
   ];
 
   for (const pageInfo of pages) {
