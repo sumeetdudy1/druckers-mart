@@ -11,78 +11,111 @@ const selected = products.find((product) => product.id === selectedId);
 <SiteLayout title="Request a quote | Druckers Mart">
   <div class="container enquiry-page">
     <section class="hero enquiry-hero">
-      <p class="eyebrow">Enquiry</p>
-      <h1>Tell us what you need.</h1>
+      <h1 class="industrial-heading">Tell us what you need.</h1>
       {selected ? (
-        <div class="product-banner">
-          <p>You're enquiring about:</p>
-          <h3>{selected.name}</h3>
+        <div class="product-banner-industrial">
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase block mb-1">SELECTED_PRODUCT</span>
+          <h3 class="text-xl font-bold">{selected.name}</h3>
         </div>
       ) : (
         <p class="lede">Share the product, quantity and delivery location. Availability is confirmed after your enquiry or order.</p>
       )}
-      <p class="demo-notice">Enquiries are sent to our team at druckersmart@gmail.com. We aim to respond within one business day.</p>
+      <p class="demo-notice font-mono text-xs text-slate-500 mt-2">Enquiries are sent to our team at druckersmart@gmail.com. We aim to respond within one business day.</p>
     </section>
 
-    <form class="enquiry-form" id="enquiry-form" method="post" action={ENQUIRY_ENDPOINT}>
-      <ol class="form-steps" aria-label="Enquiry stages">
-        <li class="form-step form-step--active"><span>01</span> Requirement</li>
-        <li class="form-step"><span>02</span> Buyer details</li>
-        <li class="form-step"><span>03</span> Submit enquiry</li>
+    <form class="enquiry-form-industrial" id="enquiry-form" method="post" action={ENQUIRY_ENDPOINT}>
+      <ol class="form-steps-industrial" aria-label="Enquiry stages">
+        <li class="form-step-industrial form-step-industrial--active"><span class="font-mono">01 //</span> REQUIREMENT</li>
+        <li class="form-step-industrial"><span class="font-mono">02 //</span> BUYER_DETAILS</li>
+        <li class="form-step-industrial"><span class="font-mono">03 //</span> SUBMIT_ENQUIRY</li>
       </ol>
-      <fieldset>
-        <legend>Requirement details</legend>
-        <label for="product_id">Product</label>
-        <select id="product_id" name="product_id">
-          <option value="">I am enquiring about a general requirement</option>
-          {products.map((product) => <option value={product.id} selected={product.id === selected?.id}>{product.name}</option>)}
-        </select>
-        <label for="quantity_requirement">Quantity or requirement <span aria-hidden="true">*</span></label>
-        <input id="quantity_requirement" name="quantity_requirement" required />
-        <label for="delivery_location">Delivery location <span aria-hidden="true">*</span></label>
-        <input id="delivery_location" name="delivery_location" required />
-        <label for="required_by_date">Required by date</label>
-        <input id="required_by_date" name="required_by_date" type="date" />
-        <label for="additional_notes">Additional notes</label>
-        <textarea id="additional_notes" name="additional_notes" rows="4"></textarea>
-      </fieldset>
-      <fieldset>
-        <legend>Buyer details</legend>
-        <label for="buyer_name">Your name <span aria-hidden="true">*</span></label>
-        <input id="buyer_name" name="buyer_name" required autocomplete="name" />
-        <label for="company">Company</label>
-        <input id="company" name="company" autocomplete="organization" />
-        <label for="work_email">Work email <span aria-hidden="true">*</span></label>
-        <input id="work_email" name="work_email" type="email" required autocomplete="email" />
-        <label for="phone">Phone <span aria-hidden="true">*</span></label>
-        <input id="phone" name="phone" type="tel" required autocomplete="tel" />
-        <div class="check">
-          <input type="checkbox" id="consent_contact" name="consent_contact" value="true" required />
-          <label for="consent_contact">I agree that Druckers Mart may use these details to respond to this enquiry.</label>
-        </div>
-        <p class="form-help">See the <a href="/privacy">Privacy Policy</a>.</p>
-        <input type="hidden" name="privacy_policy_version" value="demo-v1" />
-        <input type="hidden" name="form_started_at" id="form_started_at" />
-        <label class="honeypot" aria-hidden="true">Leave this field empty<input name="honeypot" id="honeypot" tabindex="-1" autocomplete="off" /></label>
-      </fieldset>
-      <button class="button" type="submit" id="submit-button">Submit enquiry</button>
-      <div id="error-panel" class="notice notice--error" hidden role="alert">
-        <p>We couldn't submit your enquiry right now.</p>
-        <p>Please try again or contact us directly:</p>
-        <p><a href="tel:+919****5213">Call us: +91 99682 75213</a> · <a href="https://wa.me/919968275213">WhatsApp</a> · <a href="mailto:druckersmart@gmail.com">Email</a></p>
+
+      <div class="form-grid-industrial">
+        <fieldset class="form-panel-industrial">
+          <legend class="industrial-heading text-lg font-bold border-b border-line pb-2 mb-4">01. REQUIREMENT_DETAILS</legend>
+
+          <div class="field-group">
+            <label for="product_id" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Product</label>
+            <select id="product_id" name="product_id">
+              <option value="">I am enquiring about a general requirement</option>
+              {products.map((product) => <option value={product.id} selected={product.id === selected?.id}>{product.name}</option>)}
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label for="quantity_requirement" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Quantity or requirement <span aria-hidden="true" class="text-orange-600">*</span></label>
+            <input id="quantity_requirement" name="quantity_requirement" required />
+          </div>
+
+          <div class="field-group">
+            <label for="delivery_location" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Delivery location <span aria-hidden="true" class="text-orange-600">*</span></label>
+            <input id="delivery_location" name="delivery_location" required />
+          </div>
+
+          <div class="field-group">
+            <label for="required_by_date" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Required by date</label>
+            <input id="required_by_date" name="required_by_date" type="date" />
+          </div>
+
+          <div class="field-group">
+            <label for="additional_notes" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Additional notes</label>
+            <textarea id="additional_notes" name="additional_notes" rows="4"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-panel-industrial">
+          <legend class="industrial-heading text-lg font-bold border-b border-line pb-2 mb-4">02. BUYER_DETAILS</legend>
+
+          <div class="field-group">
+            <label for="buyer_name" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Your name <span aria-hidden="true" class="text-orange-600">*</span></label>
+            <input id="buyer_name" name="buyer_name" required autocomplete="name" />
+          </div>
+
+          <div class="field-group">
+            <label for="company" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Company</label>
+            <input id="company" name="company" autocomplete="organization" />
+          </div>
+
+          <div class="field-group">
+            <label for="work_email" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Work email <span aria-hidden="true" class="text-orange-600">*</span></label>
+            <input id="work_email" name="work_email" type="email" required autocomplete="email" />
+          </div>
+
+          <div class="field-group">
+            <label for="phone" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Phone <span aria-hidden="true" class="text-orange-600">*</span></label>
+            <input id="phone" name="phone" type="tel" required autocomplete="tel" />
+          </div>
+
+          <div class="check">
+            <input type="checkbox" id="consent_contact" name="consent_contact" value="true" required />
+            <label for="consent_contact" class="text-xs text-slate-600">I agree that Druckers Mart may use these details to respond to this enquiry.</label>
+          </div>
+          <p class="form-help text-xs text-slate-500 mt-2">See the <a href="/privacy" class="underline">Privacy Policy</a>.</p>
+          <input type="hidden" name="privacy_policy_version" value="demo-v1" />
+          <input type="hidden" name="form_started_at" id="form_started_at" />
+          <label class="honeypot" aria-hidden="true">Leave this field empty<input name="honeypot" id="honeypot" tabindex="-1" autocomplete="off" /></label>
+        </fieldset>
       </div>
-      <p class="form-status" id="form-status" role="status" hidden></p>
+
+      <button class="button" type="submit" id="submit-button">Submit enquiry</button>
+
+      <div id="error-panel" class="notice-industrial notice-industrial--error" hidden role="alert">
+        <p class="font-bold mb-1">We couldn't submit your enquiry right now.</p>
+        <p class="text-sm mb-4">Please try again or contact us directly:</p>
+        <p class="text-sm"><a href="tel:+919****5213" class="underline">Call us: +91 99682 75213</a> · <a href="https://wa.me/919968275213" class="underline">WhatsApp</a> · <a href="mailto:druckersmart@gmail.com" class="underline">Email</a></p>
+      </div>
+      <p class="form-status font-mono text-xs" id="form-status" role="status" hidden></p>
     </form>
 
-    <section class="notice notice--success" id="success-panel" hidden aria-labelledby="success-title">
-      <h2 id="success-title">Enquiry received</h2>
-      <p>Thanks for contacting Druckers Mart. Our team will review your requirement and get back to you.</p>
+    <section class="notice-industrial notice-industrial--success" id="success-panel" hidden aria-labelledby="success-title">
+      <h2 id="success-title" class="industrial-heading text-2xl font-bold mb-2">Enquiry received</h2>
+      <p class="text-slate-700 mb-6">Thanks for contacting Druckers Mart. Our team will review your requirement and get back to you.</p>
       <div class="actions">
         <a class="button" href="/products">Back to Products</a>
         <a class="button button--secondary" href="https://wa.me/919968275213" target="_blank" rel="noopener">WhatsApp Us</a>
       </div>
     </section>
-    
+
     <AvailabilityPanel />
   </div>
 </SiteLayout>
@@ -142,7 +175,7 @@ const selected = products.find((product) => product.id === selectedId);
         console.error('Fetch error:', err);
         return { ok: false, status: 0, text: () => Promise.resolve(err.message) };
       });
-      
+
       if (response.ok) {
         form.classList.add('hidden-form');
         success?.removeAttribute('hidden');
@@ -161,35 +194,42 @@ const selected = products.find((product) => product.id === selectedId);
 </script>
 
 <style>
-  .enquiry-page { padding-block: var(--space-xl); }
-  .enquiry-hero { margin-bottom: var(--space-xl); }
-  
-  .enquiry-form { display: grid; gap: var(--space-lg); max-width: 48rem; }
-  .form-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); list-style: none; padding: 0; margin-bottom: var(--space-xl); }
-  .form-step { border-top: 3px solid var(--line); padding-top: var(--space-sm); color: #64748b; font-weight: 700; font-size: var(--text-sm); }
-  .form-step span { display: block; color: var(--signal-orange); font-size: var(--text-xs); letter-spacing: 0.08em; }
-  .form-step--active { border-color: var(--signal-orange); color: var(--graphite); }
-  
-  fieldset { display: grid; gap: var(--space-md); border: none; padding: 0; margin-bottom: var(--space-xl); }
-  legend { font-size: var(--text-xl); font-weight: 800; margin-bottom: var(--space-md); }
-  
-  input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: var(--space-sm); font: inherit; min-height: 3rem; }
+  .enquiry-page { padding-block: var(--space-2xl); }
+  .enquiry-hero { margin-bottom: var(--space-2xl); }
+
+  .enquiry-form-industrial { display: grid; gap: var(--space-xl); }
+
+  /* Progress Rail */
+  .form-steps-industrial { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; list-style: none; padding: 0; background: var(--line); border: 1px solid var(--line); margin-bottom: var(--space-xl); }
+  .form-step-industrial { padding: 1.25rem; background: var(--white); color: #64748b; font-weight: 700; font-size: var(--text-sm); display: flex; gap: var(--space-sm); align-items: center; }
+  .form-step-industrial--active { color: var(--graphite); background: var(--off-white); border-bottom: 2px solid var(--signal-orange); }
+  .form-step-industrial span { color: var(--signal-orange); }
+
+  /* Form Layout */
+  .form-grid-industrial { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); align-items: start; }
+  .form-panel-industrial { display: grid; gap: var(--space-md); border: 1px solid var(--line); padding: 2rem; background: var(--white); margin: 0; }
+  .form-panel-industrial legend { padding-inline: 0; }
+
+  .field-group { display: grid; gap: var(--space-xs); }
+
+  input, select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 0; padding: var(--space-sm); font: inherit; min-height: 2.75rem; background: var(--white); }
   input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--signal-orange); outline-offset: 2px; }
-  
+
   .check { display: flex; gap: var(--space-sm); align-items: flex-start; margin-top: var(--space-sm); }
   .check input { width: auto; min-height: 1.2rem; }
-  
-  .notice--success { background: #f0fdf4; border: 1px solid var(--status-green); color: var(--graphite); padding: var(--space-lg); border-radius: var(--radius-md); }
-  .notice--error { background: #fff3f0; border-left: 4px solid var(--signal-orange); padding: var(--space-lg); }
-  
-  .product-banner { margin-bottom: var(--space-md); padding: var(--space-md); background: var(--off-white); border: 1px solid var(--line); border-radius: var(--radius-md); }
-  .product-banner p { margin: 0; font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; color: var(--mineral-blue); }
-  .product-banner h3 { margin: 0.25rem 0 0; font-size: var(--text-lg); }
-  
+
+  /* Success / Error States */
+  .notice-industrial { border: 1px solid var(--line); padding: 2.5rem; background: var(--white); }
+  .notice-industrial--success { border-color: var(--status-green); }
+  .notice-industrial--error { border-color: var(--signal-orange); }
+
+  .product-banner-industrial { margin-bottom: var(--space-lg); padding: 1.5rem; border: 1px solid var(--line); background: var(--white); }
+
   .hidden-form { display: none !important; }
-  
-  @media (max-width: 760px) {
-    .form-steps { grid-template-columns: 1fr; gap: var(--space-xs); }
-    .form-step { border-top: none; border-left: 3px solid var(--line); padding: var(--space-xs) var(--space-sm); }
+
+  @media (max-width: 900px) {
+    .form-grid-industrial { grid-template-columns: 1fr; gap: var(--space-lg); }
+    .form-steps-industrial { grid-template-columns: 1fr; gap: 1px; }
+    .form-step-industrial { padding: 1rem; }
   }
 </style>
