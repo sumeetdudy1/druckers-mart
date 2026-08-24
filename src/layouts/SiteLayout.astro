@@ -78,20 +78,32 @@ const commit = import.meta.env.COMMIT_SHA || "unknown";
     </header>
     <main><slot /></main>
     <footer class="site-footer">
-      <div class="container site-footer__inner">
-        <div>
-          <p class="site-footer__brand">Druckers Mart Private Limited</p>
-          <p>{druckersBusiness.location}</p>
-          <p><a href={`tel:${druckersBusiness.phone}`}>{phoneDisplay}</a> · <a href={`mailto:${druckersBusiness.email}`}>{druckersBusiness.email}</a></p>
+      <div class="container site-footer__rail">
+        <div class="site-footer__cell">
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">COMPANY</span>
+          <p class="site-footer__brand font-bold">{druckersBusiness.legalName}</p>
+          <p class="text-xs text-slate-600">{druckersBusiness.location}</p>
         </div>
-        <nav class="site-footer__nav" aria-label="Footer navigation">
-          <a href="/products">Products</a>
-          <a href="/resources">Resources</a>
-          <a href="/privacy">Privacy</a>
-          <a href="/terms">Terms</a>
-          <a href="/returns">Returns</a>
-          <a href="/contact">Contact</a>
-        </nav>
+        <div class="site-footer__cell">
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">CONTACT</span>
+          <p class="text-sm"><a href={`tel:${druckersBusiness.phone}`} class="font-bold underline decoration-line underline-offset-4">{phoneDisplay}</a></p>
+          <p class="text-sm mt-1"><a href={`mailto:${druckersBusiness.email}`} class="text-slate-600 hover:text-slate-900 transition-colors">{druckersBusiness.email}</a></p>
+        </div>
+        <div class="site-footer__cell">
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">NAVIGATION</span>
+          <nav class="site-footer__nav" aria-label="Footer navigation">
+            <div class="footer-nav-group">
+              <a href="/products">Products</a>
+              <a href="/resources">Resources</a>
+              <a href="/contact">Contact</a>
+            </div>
+            <div class="footer-nav-group">
+              <a href="/privacy">Privacy</a>
+              <a href="/terms">Terms</a>
+              <a href="/returns">Returns</a>
+            </div>
+          </nav>
+        </div>
       </div>
     </footer>
     <script>
