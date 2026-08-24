@@ -102,10 +102,9 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--signal-orange);
 .site-nav__mobile-contact { display: none; }
 .site-nav__cta { display: none; }
   
-.site-header__contact { display: flex; align-items: center; gap: .75rem; margin-left: auto; }
-.site-nav__cta { display: inline-flex; }
-.header-phone { font-size: .85rem; color: var(--mineral-blue); text-decoration: none; white-space: nowrap; font-weight: 600; }
-.header-quote { display: inline-flex; }
+.site-header__contact { display: flex; align-items: center; gap: 1.5rem; margin-left: auto; }
+.site-nav__cta { display: inline-flex; border-radius: 0; }
+.header-phone { font-size: .85rem; color: var(--mineral-blue); text-decoration: none; white-space: nowrap; font-weight: 700; font-family: var(--font-family-heading); }
 
 .menu-toggle { display: none; }
 
