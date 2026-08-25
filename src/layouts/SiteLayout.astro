@@ -80,17 +80,17 @@ const commit = import.meta.env.COMMIT_SHA || "unknown";
     <footer class="site-footer">
       <div class="container site-footer__rail">
         <div class="site-footer__cell">
-          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">COMPANY</span>
-          <p class="site-footer__brand font-bold">{druckersBusiness.legalName}</p>
-          <p class="text-xs text-slate-600">{druckersBusiness.location}</p>
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-4 block font-semibold">COMPANY</span>
+          <p class="site-footer__brand">{druckersBusiness.legalName}</p>
+          <p class="text-xs text-slate-600 max-w-[25ch] leading-relaxed">{druckersBusiness.location}</p>
         </div>
         <div class="site-footer__cell">
-          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">CONTACT</span>
-          <p class="text-sm"><a href={`tel:${druckersBusiness.phone}`} class="font-bold underline decoration-line underline-offset-4">{phoneDisplay}</a></p>
-          <p class="text-sm mt-1"><a href={`mailto:${druckersBusiness.email}`} class="text-slate-600 hover:text-slate-900 transition-colors">{druckersBusiness.email}</a></p>
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-4 block font-semibold">CONTACT</span>
+          <p class="text-sm mb-2"><a href={`tel:${druckersBusiness.phone}`} class="font-bold underline decoration-line underline-offset-4">{phoneDisplay}</a></p>
+          <p class="text-sm"><a href={`mailto:${druckersBusiness.email}`} class="text-slate-600 hover:text-slate-900 transition-colors">{druckersBusiness.email}</a></p>
         </div>
         <div class="site-footer__cell">
-          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-2 block font-semibold">NAVIGATION</span>
+          <span class="font-mono text-[10px] tracking-wider text-slate-500 uppercase mb-4 block font-semibold">DIRECTORY</span>
           <nav class="site-footer__nav" aria-label="Footer navigation">
             <div class="footer-nav-group">
               <a href="/products">Products</a>
