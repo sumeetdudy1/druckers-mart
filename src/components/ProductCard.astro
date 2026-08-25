@@ -56,12 +56,11 @@ const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquir
     border-radius: 0;
     background: var(--white);
     overflow: hidden;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast);
   }
   @media (hover: hover) and (pointer: fine) {
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-base);
+      border-color: var(--mineral-blue);
     }
   }
   .card:focus-within {
