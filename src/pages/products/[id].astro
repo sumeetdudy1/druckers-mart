@@ -70,12 +70,12 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
         </header>
 
         {verifiedSpecs.length > 0 && (
-          <section class="product-specs" aria-labelledby="specs-title">
-            <h2 id="specs-title" class="industrial-heading text-lg">Key Specifications</h2>
-            <dl class="specs-grid-industrial">
+          <section class="product-specs-editorial" aria-labelledby="specs-title">
+            <h2 id="specs-title" class="industrial-heading text-lg mb-4">Key Specifications</h2>
+            <dl class="specs-editorial-list">
               {verifiedSpecs.map(([key, field]) => (
-                <div class="spec-item-industrial">
-                  <dt class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">{key.replaceAll('_', ' ')}</dt>
+                <div class="spec-item-editorial">
+                  <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-500">{key.replaceAll('_', ' ')}</dt>
                   <dd class="text-sm font-semibold text-slate-900">{field.value}</dd>
                 </div>
               ))}
@@ -95,7 +95,7 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
       </main>
 
       <aside class="product-detail-aside" aria-labelledby="aside-title">
-        <section class="aside-panel" id="aside-title">
+        <section class="aside-panel-editorial" id="aside-title">
           <h3 class="industrial-heading">Procurement Information</h3>
           <p>Listed products can be sourced on demand. Exact availability, lead time, and delivery are confirmed after your enquiry.</p>
           <ul class="availability-list">
@@ -110,9 +110,9 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
     </div>
 
     {relatedProducts.length > 0 && (
-      <section class="related-products" aria-labelledby="related-title">
-        <h2 id="related-title" class="industrial-heading">Related Products</h2>
-        <div class="grid related-grid">{relatedProducts.map((product) => <ProductCard product={product} />)}</div>
+      <section class="related-products-editorial" aria-labelledby="related-title">
+        <h2 id="related-title" class="industrial-heading mb-8">Related Products</h2>
+        <div class="grid">{relatedProducts.map((product) => <ProductCard product={product} />)}</div>
       </section>
     )}
   </div>
@@ -120,44 +120,43 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
 
 <style>
   .product-page { padding-block: var(--space-xl); }
-  .breadcrumbs { display: flex; gap: var(--space-sm); font-size: var(--text-sm); margin-bottom: var(--space-lg); }
+  .breadcrumbs { display: flex; gap: var(--space-sm); font-size: var(--text-sm); margin-bottom: var(--space-2xl); }
   
   .product-detail-layout {
     display: grid;
-    grid-template-columns: 1fr minmax(auto, 350px);
-    gap: var(--space-2xl);
+    grid-template-columns: 1fr 350px;
+    gap: var(--space-3xl);
     align-items: start;
   }
   
-  .product-header__image { margin-bottom: var(--space-lg); border: 1px solid var(--line); }
-  .product-header__image img { width: 100%; height: auto; border: 1px solid var(--line); }
+  .product-header__image { margin-bottom: var(--space-lg); }
+  .product-header__image img { width: 100%; height: auto; }
   .product-placeholder { height: 300px; display: grid; place-items: center; color: var(--white); font-size: 4rem; }
-  .product-header__info { margin-block: var(--space-md); display: grid; gap: var(--space-sm); }
+  .product-header__info { margin-block: var(--space-md); display: grid; gap: var(--space-xs); }
   .product-title { margin: 0; font-size: var(--text-4xl); max-width: 18ch; }
   .product-sku { margin: 0; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: #64748b; }
   .availability-label { margin: 0; font-size: var(--text-sm); color: #64748b; }
   
-  .product-specs { padding: 1.5rem; border: 1px solid var(--line); background: var(--white); }
-  .specs-grid-industrial { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 1rem; }
-  .spec-item-industrial { background: var(--white); padding: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+  .product-specs-editorial { margin-block: var(--space-xl); }
+  .specs-editorial-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .spec-item-editorial { display: grid; grid-template-columns: 120px 1fr; align-items: baseline; padding-block: 0.25rem; border-bottom: 1px solid var(--line); }
   
   .product-description { margin-block: var(--space-xl); line-height: 1.6; }
   
   .product-cta-group { display: flex; gap: var(--space-md); margin-block: var(--space-2xl); }
   .product-cta-group .button { flex: 1; justify-content: center; }
-  .whatsapp-btn { color: #25D366; border-color: #25D366; }
+  .whatsapp-btn { background: transparent; border: 1px solid #25D366; color: #25D366; }
   .whatsapp-btn:hover { background: #25D366; color: var(--white); }
   
-  .aside-panel { position: sticky; top: var(--space-lg); border: 1px solid var(--line); padding: 1.5rem; }
-  .aside-panel h3 { margin-top: 0; font-size: var(--text-lg); margin-bottom: var(--space-md); }
+  .aside-panel-editorial { position: sticky; top: var(--space-lg); padding-block: var(--space-xl); }
+  .aside-panel-editorial h3 { margin-top: 0; font-size: var(--text-xl); margin-bottom: var(--space-md); }
   .availability-list { padding: 0; list-style: none; margin: 0 0 var(--space-md); display: grid; gap: var(--space-sm); font-size: var(--text-sm); }
   .aside-cta .button { width: 100%; justify-content: center; }
   
-  .related-products { margin-top: var(--space-2xl); padding-top: var(--space-2xl); border-top: 1px solid var(--line); }
-  .related-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-lg); }
+  .related-products-editorial { margin-top: var(--space-3xl); padding-top: var(--space-2xl); border-top: 1px solid var(--line); }
   
   @media (max-width: 900px) {
-    .product-detail-layout { grid-template-columns: 1fr; }
+    .product-detail-layout { grid-template-columns: 1fr; gap: var(--space-xl); }
     .product-cta-group { flex-direction: column; }
     .product-placeholder { height: 220px; font-size: 3rem; }
   }

@@ -32,43 +32,43 @@ const categoryLabels = { '': 'All stages', 'pre-press': 'Pre-press', press: 'Pre
         }
       }))
     })} />
-    
+
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <a href="/">Home</a>
       <span aria-hidden="true">/</span>
       <span>Products</span>
     </nav>
 
-    <section class="hero products-hero">
+    <section class="products-hero">
       <p class="eyebrow">Catalogue</p>
       <h1 class="industrial-heading">Products by production stage.</h1>
       <p class="lede">Browse our industrial procurement catalogue. Availability confirmed on enquiry.</p>
     </section>
 
-    <form class="filters-industrial" method="get" action="/products" aria-label="Filter products">
-      <div class="filter-group">
-        <label for="q" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Search</label>
-        <input type="search" id="q" name="q" value={query} placeholder="Search products..." class="w-full" />
+    <form class="filters-editorial" method="get" action="/products" aria-label="Filter products">
+      <div class="filter-group-editorial">
+        <label for="q" class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Search</label>
+        <input type="search" id="q" name="q" value={query} placeholder="Search products..." />
       </div>
-      <div class="filter-group">
-        <label for="category" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Stage</label>
-        <select id="category" name="category" class="w-full">
+      <div class="filter-group-editorial">
+        <label for="category" class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Stage</label>
+        <select id="category" name="category">
           <option value="">All stages</option>
           <option value="pre-press" selected={category === 'pre-press'}>Pre-press</option>
           <option value="press" selected={category === 'press'}>Press</option>
           <option value="post-press" selected={category === 'post-press'}>Post-press</option>
         </select>
       </div>
-      <div class="filter-group">
-        <label for="availability" class="font-mono text-[10px] tracking-wider text-slate-500 uppercase">Status</label>
-        <select id="availability" name="availability" class="w-full">
+      <div class="filter-group-editorial">
+        <label for="availability" class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Status</label>
+        <select id="availability" name="availability">
           <option value="">All statuses</option>
           <option value="availability_to_be_confirmed" selected={availability === 'availability_to_be_confirmed'}>To be confirmed</option>
           <option value="in_stock" selected={availability === 'in_stock'}>In Stock</option>
         </select>
       </div>
-      <div class="filter-actions-industrial">
-        <button class="button button--small" type="submit">Apply</button>
+      <div class="filter-actions-editorial">
+        <button class="button button--small" type="submit">Apply Filters</button>
         <a class="button button--small button--secondary" href="/products">Clear</a>
       </div>
     </form>
@@ -77,50 +77,22 @@ const categoryLabels = { '': 'All stages', 'pre-press': 'Pre-press', press: 'Pre
       {products.length} product{products.length === 1 ? '' : 's'} · {categoryLabels[category as keyof typeof categoryLabels] ?? 'Selected stage'}
     </p>
 
-  <style>
-    .filters-industrial { 
-      display: grid; 
-      grid-template-columns: 2fr 1fr 1fr auto; 
-      gap: 1px; 
-      background: var(--line); 
-      border: 1px solid var(--line);
-      margin-bottom: var(--space-md);
-    }
-    .filter-group { background: var(--white); padding: 0.75rem 1rem; }
-    .filter-group label { display: block; margin-bottom: 0.25rem; }
-    .filter-group input, .filter-group select { 
-      border: 1px solid var(--line); 
-      padding: 0.25rem 0.5rem; 
-      font: inherit; 
-      background: var(--white); 
-      border-radius: var(--radius-sm);
-      height: 2rem;
-      width: 100%;
-    }
-    .filter-actions-industrial { background: var(--white); padding: 0.75rem 1rem; display: flex; align-items: end; gap: 0.5rem; }
-    
-    @media (max-width: 800px) { 
-      .filters-industrial { grid-template-columns: 1fr; } 
-      .filter-actions-industrial { justify-content: start; }
-    }
-  </style>
-
     <div class="grid" id="product-grid">
       {products.map((product) => <ProductCard product={product} />)}
     </div>
-    
+
     <div class="notice" id="no-results" hidden={products.length > 0}>
       <h2>No matching products</h2>
       <p>Try clearing a filter or tell us what you need.</p>
       <a class="button" href="/enquiry">Request availability</a>
     </div>
-    
+
     <AvailabilityPanel />
   </div>
 </SiteLayout>
 
 <script>
-  const filterForm = document.querySelector('.filters-industrial') as HTMLFormElement | null;
+  const filterForm = document.querySelector('.filters-editorial') as HTMLFormElement | null;
   const cards = [...document.querySelectorAll<HTMLElement>('[data-product-card]')];
   const resultCount = document.querySelector('#result-count');
   const noResults = document.querySelector('#no-results') as HTMLElement | null;
@@ -164,31 +136,39 @@ const categoryLabels = { '': 'All stages', 'pre-press': 'Pre-press', press: 'Pre
 
 <style>
   .products-page { padding-bottom: var(--space-2xl); }
+  .breadcrumbs { display: flex; gap: var(--space-sm); font-size: var(--text-sm); margin-bottom: var(--space-lg); }
   .products-hero { padding-block: var(--space-xl) var(--space-lg); }
-    
-  .filters-industrial { 
-    display: grid; 
-    grid-template-columns: 2fr 1fr 1fr auto; 
-    gap: 1px; 
-    background: var(--line); 
+  .products-hero h1 { font-size: clamp(2.5rem, 5vw, 3.5rem); margin: 0.5rem 0 1rem; }
+
+  .filters-editorial {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--line);
+  }
+  .filter-group-editorial { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 200px; }
+  .filter-group-editorial label { font-family: var(--font-family-heading); }
+  .filter-group-editorial input, .filter-group-editorial select {
     border: 1px solid var(--line);
-    margin-bottom: var(--space-md);
-  }
-  .filter-group { background: var(--white); padding: 0.75rem 1rem; }
-  .filter-group label { display: block; margin-bottom: 0.25rem; }
-  .filter-group input, .filter-group select { 
-    border: 1px solid var(--line); 
-    padding: 0.25rem 0.5rem; 
-    font: inherit; 
-    background: var(--white); 
-    border-radius: var(--radius-sm);
-    height: 2rem;
+    padding: 0.5rem;
+    font: inherit;
+    background: var(--white);
+    height: 2.75rem;
     width: 100%;
+    outline: none;
+    transition: border-color var(--transition-fast);
   }
-  .filter-actions-industrial { background: var(--white); padding: 0.75rem 1rem; display: flex; align-items: end; gap: 0.5rem; }
-    
-  @media (max-width: 800px) { 
-    .filters-industrial { grid-template-columns: 1fr; } 
-    .filter-actions-industrial { justify-content: start; }
+  .filter-group-editorial input:focus, .filter-group-editorial select:focus {
+    border-color: var(--mineral-blue);
+  }
+  .filter-actions-editorial { display: flex; gap: 0.75rem; }
+
+  @media (max-width: 800px) {
+    .filters-editorial { flex-direction: column; align-items: stretch; gap: 1.5rem; }
+    .filter-group-editorial { min-width: 100%; }
+    .filter-actions-editorial { justify-content: flex-start; }
   }
 </style>
