@@ -43,7 +43,7 @@ const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquir
 
   <div class="card__actions">
     <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote</a>
-    <a class="button button--secondary whatsapp-btn" href={`https://wa.me/919968275213?text=${whatsappMsg}`} target="_blank" rel="noopener" aria-label={`WhatsApp about ${product.name}`}>WhatsApp</a>
+    <a class="whatsapp-text" href={`https://wa.me/919968275213?text=${whatsappMsg}`} target="_blank" rel="noopener" aria-label={`WhatsApp about ${product.name}`}>WhatsApp</a>
   </div>
 </article>
 
@@ -86,12 +86,12 @@ const whatsappMsg = encodeURIComponent(`Hi Druckers Mart, I would like to enquir
   .card__spec-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; color: var(--mineral-blue); white-space: nowrap; }
   .card__spec-value { font-size: var(--text-sm); font-weight: 500; color: var(--graphite); }
 
-  .card__actions { display: grid; grid-template-columns: 1fr auto; gap: var(--space-sm); padding: var(--space-md) var(--space-lg) var(--space-lg); }
-  .whatsapp-btn { padding-inline: var(--space-md); }
+  .card__actions { display: flex; flex-direction: column; gap: var(--space-xs); padding: var(--space-md) var(--space-lg) var(--space-lg); }
+  .whatsapp-text { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; color: var(--mineral-blue); text-decoration: underline; text-align: center; }
 
-  @media (max-width: 520px) {
-    .card__actions { grid-template-columns: 1fr; }
-    .card__actions .button { justify-content: center; }
+  @media (min-width: 520px) {
+    .card__actions { flex-direction: row; align-items: center; justify-content: space-between; }
+    .whatsapp-text { text-align: right; }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -90,7 +90,7 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
 
         <div class="product-cta-group">
           <a class="button" href={`/enquiry?product=${product.id}`}>Request Quote</a>
-          <a class="button button--secondary whatsapp-btn" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp Enquiry</a>
+          <a class="whatsapp-detail-link" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp Enquiry</a>
         </div>
       </main>
 
@@ -143,10 +143,10 @@ const schemaAvailability = product.availability_status === 'in_stock' ? 'https:/
   
   .product-description { margin-block: var(--space-xl); line-height: 1.6; }
   
-  .product-cta-group { display: flex; gap: var(--space-md); margin-block: var(--space-2xl); }
-  .product-cta-group .button { flex: 1; justify-content: center; }
-  .whatsapp-btn { background: transparent; border: 1px solid #25D366; color: #25D366; }
-  .whatsapp-btn:hover { background: #25D366; color: var(--white); }
+  .product-cta-group { display: flex; align-items: center; gap: var(--space-xl); margin-block: var(--space-2xl); }
+  .product-cta-group .button { flex: 1; justify-content: center; max-width: 300px; }
+  .whatsapp-detail-link { font-size: var(--text-sm); font-weight: 700; color: var(--mineral-blue); text-decoration: underline; text-transform: uppercase; letter-spacing: 0.05em; }
+  .whatsapp-detail-link:hover { color: var(--graphite); }
   
   .aside-panel-editorial { position: sticky; top: var(--space-lg); padding-block: var(--space-xl); }
   .aside-panel-editorial h3 { margin-top: 0; font-size: var(--text-xl); margin-bottom: var(--space-md); }
