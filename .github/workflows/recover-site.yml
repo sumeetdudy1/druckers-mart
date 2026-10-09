@@ -19,7 +19,7 @@ jobs:
         run: |
           set -eu
           BASE='https://druckers-mart-ixut267c6-sumeetdudy1-5957s-projects.vercel.app'
-          mkdir -p recovered/assets
+          mkdir -p recovered/src/assets
           fetch() {
             url="$1"
             out="$2"
@@ -29,15 +29,16 @@ jobs:
             echo "RESULT url=$url http=$code bytes=$size"
             [ "$code" -ge 200 ] && [ "$code" -lt 300 ] && [ "$size" -gt 1000 ]
           }
-          fetch "$BASE/" recovered/index.html || exit 11
-          fetch "$BASE/assets/hero.webp" recovered/assets/hero.webp || exit 12
-          fetch "$BASE/assets/products-collage.webp" recovered/assets/products-collage.webp || exit 13
-          grep -qi '<html' recovered/index.html || exit 14
-          for f in recovered/assets/hero.webp recovered/assets/products-collage.webp; do
-            test "$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null)" = WEBP || exit 15
+          fetch "$BASE/src/index.html" recovered/src/index.html || exit 11
+          fetch "$BASE/src/assets/hero.webp" recovered/src/assets/hero.webp || exit 12
+          fetch "$BASE/src/assets/products-collage.webp" recovered/src/assets/products-collage.webp || exit 13
+          grep -qi '<html' recovered/src/index.html || exit 14
+          for f in recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp; do
+            magic="$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null | od -An -tc | tr -d ' \n')"
+            test "$magic" = WEBP || { echo "Invalid WebP: $f magic=$magic"; exit 15; }
           done
-          wc -c recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
-          sha1sum recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
+          wc -c recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
+          sha1sum recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
       - name: Commit recovered copy
         run: |
           git config user.name github-actions[bot]
