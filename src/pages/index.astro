@@ -18,8 +18,13 @@ const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}
             <a class="button button--secondary" href={whatsappUrl} target="_blank" rel="noopener">WhatsApp Enquiry</a>
           </div>
         </div>
-        <div class="home-hero__visual">
-          <img src="/hero-material-macro.jpg" alt="Macro texture of premium printed packaging material" class="w-full h-full object-cover" />
+        <div class="home-hero__visual" role="img" aria-label="Printing and packaging production supply categories">
+          <div class="hero-material-board">
+            <span class="hero-material-board__label">DRUCKERS MART / SUPPLY DESK</span>
+            <div class="hero-material-board__rule"></div>
+            <div class="hero-material-board__headline">PRINT.<br />FINISH.<br /><em>DELIVER.</em></div>
+            <div class="hero-material-board__footer"><span>PRE-PRESS</span><span>PRESS</span><span>POST-PRESS</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -142,7 +147,13 @@ const whatsappUrl = `https://wa.me/${druckersBusiness.whatsapp.replace('+', '')}
 .home-hero__container { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2xl); align-items: center; }
 .home-hero__content { display: grid; gap: var(--space-md); }
 .home-hero h1 { font-size: clamp(3rem, 6vw, 4.5rem); margin: 0; line-height: 1; }
-.home-hero__visual { aspect-ratio: 4/3; border: 1px solid var(--line); overflow: hidden; }
+.home-hero__visual { aspect-ratio: 4/3; border: 1px solid var(--line); overflow: hidden; background: #102f2b; color: #f5f8f3; }
+.hero-material-board { height: 100%; min-height: 280px; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(1.25rem, 4vw, 3rem); background: radial-gradient(ellipse at 85% 10%, rgb(212 242 122 / 16%), transparent 38%), linear-gradient(135deg, #102f2b, #071d1b); }
+.hero-material-board__label, .hero-material-board__footer { font: 700 .7rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .14em; }
+.hero-material-board__rule { width: 100%; height: 1px; background: rgb(245 248 243 / 25%); margin-top: 1.5rem; }
+.hero-material-board__headline { font: 800 clamp(2.4rem, 5vw, 4.5rem)/.92 "IBM Plex Sans Condensed", Arial, sans-serif; letter-spacing: -.035em; }
+.hero-material-board__headline em { color: #d4f27a; font-style: normal; }
+.hero-material-board__footer { display: flex; justify-content: space-between; gap: .5rem; border-top: 1px solid rgb(245 248 243 / 25%); padding-top: 1rem; color: #d4f27a; }
 
 /* Layout */
 .home-stack { display: grid; gap: var(--space-3xl); padding-block: var(--space-xl); }
