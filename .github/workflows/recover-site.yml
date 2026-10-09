@@ -14,26 +14,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: vercel-current-deployment
-      - name: Diagnose production URLs
+      - name: Recover current production assets
         shell: bash
         run: |
-          set -u
+          set -eu
+          BASE='https://druckers-mart-ixut267c6-sumeetdudy1-5957s-projects.vercel.app'
           mkdir -p recovered/assets
           fetch() {
             url="$1"
             out="$2"
             echo "Checking $url"
-            code="$(curl -sS -L --retry 2 --max-time 45 -o "$out" -w '%{http_code}' "$url")" || {
-              echo "Transport failure: $url"
-              return 1
-            }
+            code="$(curl -sS -L --retry 2 --max-time 45 -o "$out" -w '%{http_code}' "$url")"
             size="$(wc -c < "$out" | tr -d ' ')"
             echo "RESULT url=$url http=$code bytes=$size"
             [ "$code" -ge 200 ] && [ "$code" -lt 300 ] && [ "$size" -gt 1000 ]
           }
-          fetch https://druckersmart.com/ recovered/index.html || exit 11
-          fetch https://druckersmart.com/assets/hero.webp recovered/assets/hero.webp || exit 12
-          fetch https://druckersmart.com/assets/products-collage.webp recovered/assets/products-collage.webp || exit 13
+          fetch "$BASE/" recovered/index.html || exit 11
+          fetch "$BASE/assets/hero.webp" recovered/assets/hero.webp || exit 12
+          fetch "$BASE/assets/products-collage.webp" recovered/assets/products-collage.webp || exit 13
           grep -qi '<html' recovered/index.html || exit 14
           for f in recovered/assets/hero.webp recovered/assets/products-collage.webp; do
             test "$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null)" = WEBP || exit 15
