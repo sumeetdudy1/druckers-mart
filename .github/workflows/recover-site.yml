@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: vercel-current-deployment
-      - name: Recover current production assets
+      - name: Diagnose and recover exact deployed files
         shell: bash
         run: |
           set -eu
@@ -26,16 +26,20 @@ jobs:
             echo "Checking $url"
             code="$(curl -sS -L --retry 2 --max-time 45 -o "$out" -w '%{http_code}' "$url")"
             size="$(wc -c < "$out" | tr -d ' ')"
-            echo "RESULT url=$url http=$code bytes=$size"
+            mime="$(file -b --mime-type "$out")"
+            first12="$(od -An -tx1 -N12 "$out" | tr -s ' ' | sed 's/^ //')"
+            echo "RESULT url=$url http=$code bytes=$size mime=$mime first12=$first12"
             [ "$code" -ge 200 ] && [ "$code" -lt 300 ] && [ "$size" -gt 1000 ]
           }
           fetch "$BASE/src/index.html" recovered/src/index.html || exit 11
           fetch "$BASE/src/assets/hero.webp" recovered/src/assets/hero.webp || exit 12
           fetch "$BASE/src/assets/products-collage.webp" recovered/src/assets/products-collage.webp || exit 13
-          grep -qi '<html' recovered/src/index.html || exit 14
+          grep -qi '<html' recovered/src/index.html || { echo 'HTML signature missing'; exit 14; }
           for f in recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp; do
-            magic="$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null | od -An -tc | tr -d ' \n')"
-            test "$magic" = WEBP || { echo "Invalid WebP: $f magic=$magic"; exit 15; }
+            first4="$(od -An -tc -N4 "$f" | tr -d ' \n')"
+            webp="$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null | od -An -tc | tr -d ' \n')"
+            echo "SIGNATURE $f RIFF=$first4 WEBP=$webp"
+            [ "$first4" = RIFF ] && [ "$webp" = WEBP ] || { echo "Image is not a valid RIFF/WebP response"; exit 15; }
           done
           wc -c recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
           sha1sum recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
