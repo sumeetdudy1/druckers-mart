@@ -3,9 +3,9 @@ export const druckersBusiness = {
   legalName: 'Druckers Mart Private Limited',
   publicDescription:
     'Druckers Mart Private Limited is a B2B supplier of printing and packaging consumables, serving printers, packaging converters, and other commercial buyers with production-focused products and supply support.',
-  location: 'Baddi, Solan, Himachal Pradesh, India',
-  phone: '+919968275213',
-  whatsapp: '+919968275213',
+  location: 'Flat No. 9-10 D, New Town, Commercial Complex, 4th Floor, Sikka Hotel, Baddi, Nalagarh, Solan, Himachal Pradesh, 173205',
+  phone: '+918824582925',
+  whatsapp: '+918824582925',
   email: 'druckersmart@gmail.com',
 } as const;
 
