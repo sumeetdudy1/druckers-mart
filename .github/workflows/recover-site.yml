@@ -1,5 +1,9 @@
 name: Recover production site
 on:
+  push:
+    branches: [vercel-current-deployment]
+    paths:
+      - '.github/workflows/recover-site.yml'
   workflow_dispatch:
 permissions:
   contents: write
