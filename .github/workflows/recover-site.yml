@@ -1,0 +1,34 @@
+name: Recover production site
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: vercel-current-deployment
+      - name: Recover current production assets
+        run: |
+          set -eu
+          mkdir -p recovered/assets
+          curl -fLsS --retry 3 https://druckersmart.com/ -o recovered/index.html
+          curl -fLsS --retry 3 https://druckersmart.com/assets/hero.webp -o recovered/assets/hero.webp
+          curl -fLsS --retry 3 https://druckersmart.com/assets/products-collage.webp -o recovered/assets/products-collage.webp
+          grep -qi '<html' recovered/index.html
+          test "$(wc -c < recovered/index.html)" -gt 10000
+          test "$(wc -c < recovered/assets/hero.webp)" -gt 1000
+          test "$(wc -c < recovered/assets/products-collage.webp)" -gt 1000
+          test "$(dd if=recovered/assets/hero.webp bs=1 skip=8 count=4 2>/dev/null)" = WEBP
+          test "$(dd if=recovered/assets/products-collage.webp bs=1 skip=8 count=4 2>/dev/null)" = WEBP
+          wc -c recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
+          sha1sum recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
+      - name: Commit recovered copy
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add recovered
+          git commit -m "Recover verified production website files"
+          git push origin HEAD:vercel-current-deployment
