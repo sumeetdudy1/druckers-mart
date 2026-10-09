@@ -14,19 +14,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: vercel-current-deployment
-      - name: Recover current production assets
+      - name: Diagnose production URLs
+        shell: bash
         run: |
-          set -eu
+          set -u
           mkdir -p recovered/assets
-          curl -fLsS --retry 3 https://druckersmart.com/ -o recovered/index.html
-          curl -fLsS --retry 3 https://druckersmart.com/assets/hero.webp -o recovered/assets/hero.webp
-          curl -fLsS --retry 3 https://druckersmart.com/assets/products-collage.webp -o recovered/assets/products-collage.webp
-          grep -qi '<html' recovered/index.html
-          test "$(wc -c < recovered/index.html)" -gt 10000
-          test "$(wc -c < recovered/assets/hero.webp)" -gt 1000
-          test "$(wc -c < recovered/assets/products-collage.webp)" -gt 1000
-          test "$(dd if=recovered/assets/hero.webp bs=1 skip=8 count=4 2>/dev/null)" = WEBP
-          test "$(dd if=recovered/assets/products-collage.webp bs=1 skip=8 count=4 2>/dev/null)" = WEBP
+          fetch() {
+            url="$1"
+            out="$2"
+            echo "Checking $url"
+            code="$(curl -sS -L --retry 2 --max-time 45 -o "$out" -w '%{http_code}' "$url")" || {
+              echo "Transport failure: $url"
+              return 1
+            }
+            size="$(wc -c < "$out" | tr -d ' ')"
+            echo "RESULT url=$url http=$code bytes=$size"
+            [ "$code" -ge 200 ] && [ "$code" -lt 300 ] && [ "$size" -gt 1000 ]
+          }
+          fetch https://druckersmart.com/ recovered/index.html || exit 11
+          fetch https://druckersmart.com/assets/hero.webp recovered/assets/hero.webp || exit 12
+          fetch https://druckersmart.com/assets/products-collage.webp recovered/assets/products-collage.webp || exit 13
+          grep -qi '<html' recovered/index.html || exit 14
+          for f in recovered/assets/hero.webp recovered/assets/products-collage.webp; do
+            test "$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null)" = WEBP || exit 15
+          done
           wc -c recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
           sha1sum recovered/index.html recovered/assets/hero.webp recovered/assets/products-collage.webp
       - name: Commit recovered copy
