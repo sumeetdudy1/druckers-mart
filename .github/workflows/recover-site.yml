@@ -1,4 +1,4 @@
-name: Recover production site
+name: Diagnose deployment file routing
 on:
   push:
     branches: [vercel-current-deployment]
@@ -8,45 +8,38 @@ on:
 permissions:
   contents: write
 jobs:
-  recover:
+  diagnose:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: vercel-current-deployment
-      - name: Diagnose and recover exact deployed files
+      - name: Inspect candidate URLs
         shell: bash
         run: |
           set -eu
           BASE='https://druckers-mart-ixut267c6-sumeetdudy1-5957s-projects.vercel.app'
-          mkdir -p recovered/src/assets
-          fetch() {
-            url="$1"
-            out="$2"
-            echo "Checking $url"
-            code="$(curl -sS -L --retry 2 --max-time 45 -o "$out" -w '%{http_code}' "$url")"
+          mkdir -p diagnostics
+          probe() {
+            name="$1"; url="$2"; out="diagnostics/$name.bin"; headers="diagnostics/$name.headers"
+            echo "=== $url ==="
+            code="$(curl -sS -L --max-time 45 -D "$headers" -o "$out" -w '%{http_code}' "$url")"
             size="$(wc -c < "$out" | tr -d ' ')"
-            mime="$(file -b --mime-type "$out")"
-            first12="$(od -An -tx1 -N12 "$out" | tr -s ' ' | sed 's/^ //')"
-            echo "RESULT url=$url http=$code bytes=$size mime=$mime first12=$first12"
-            [ "$code" -ge 200 ] && [ "$code" -lt 300 ] && [ "$size" -gt 1000 ]
+            echo "URL=$url HTTP=$code BYTES=$size MIME=$(file -b --mime-type "$out")"
+            grep -iE '^(HTTP/|content-type:|content-length:|location:|x-vercel-error:)' "$headers" || true
+            echo -n 'FIRST_BYTES='
+            od -An -tx1 -N24 "$out" | tr -s ' '
+            echo 'BODY_PREVIEW:'
+            head -c 160 "$out" | strings || true
+            echo
           }
-          fetch "$BASE/src/index.html" recovered/src/index.html || exit 11
-          fetch "$BASE/src/assets/hero.webp" recovered/src/assets/hero.webp || exit 12
-          fetch "$BASE/src/assets/products-collage.webp" recovered/src/assets/products-collage.webp || exit 13
-          grep -qi '<html' recovered/src/index.html || { echo 'HTML signature missing'; exit 14; }
-          for f in recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp; do
-            first4="$(od -An -tc -N4 "$f" | tr -d ' \n')"
-            webp="$(dd if="$f" bs=1 skip=8 count=4 2>/dev/null | od -An -tc | tr -d ' \n')"
-            echo "SIGNATURE $f RIFF=$first4 WEBP=$webp"
-            [ "$first4" = RIFF ] && [ "$webp" = WEBP ] || { echo "Image is not a valid RIFF/WebP response"; exit 15; }
-          done
-          wc -c recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
-          sha1sum recovered/src/index.html recovered/src/assets/hero.webp recovered/src/assets/products-collage.webp
-      - name: Commit recovered copy
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add recovered
-          git commit -m "Recover verified production website files"
-          git push origin HEAD:vercel-current-deployment
+          probe home-root "$BASE/"
+          probe html-src "$BASE/src/index.html"
+          probe hero-root "$BASE/assets/hero.webp"
+          probe hero-src "$BASE/src/assets/hero.webp"
+          probe collage-root "$BASE/assets/products-collage.webp"
+          probe collage-src "$BASE/src/assets/products-collage.webp"
+          echo "Diagnostics only; no files will be committed as recovered website assets."
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-routing-diagnostics
+          path: diagnostics/
+          retention-days: 3
